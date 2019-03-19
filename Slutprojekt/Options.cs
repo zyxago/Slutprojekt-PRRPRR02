@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt
 {
-    class Options
+    static class Options
     {
     }
 }

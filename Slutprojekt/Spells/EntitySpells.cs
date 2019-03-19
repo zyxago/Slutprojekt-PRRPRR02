@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt.Spells
 {
-    class EntitySpells
+    static class EntitySpells
     {
+
     }
 }

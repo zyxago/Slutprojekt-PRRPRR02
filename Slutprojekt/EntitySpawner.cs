@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt
 {
-    class EntitySpawner
+    static class EntitySpawner
     {
+
     }
 }

@@ -8,5 +8,11 @@ namespace Slutprojekt
 {
     class Towers
     {
+        float AttackRange { get; set; }
+        float AttackSpeed { get; set; }
+        public Towers()
+        {
+
+        }
     }
 }

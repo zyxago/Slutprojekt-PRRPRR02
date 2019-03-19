@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt
 {
-    class Hud
+    static class Hud
     {
+
     }
 }

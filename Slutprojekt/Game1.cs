@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.IO;
 
 namespace Slutprojekt
 {
@@ -11,7 +12,9 @@ namespace Slutprojekt
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
+        string[] towersToLoad;
+        string[] enemiesToLoad;
+        string[] mapsToLoad;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -27,7 +30,9 @@ namespace Slutprojekt
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            towersToLoad = Directory.GetFiles("/Towers", "*.xml");
+            enemiesToLoad = Directory.GetFiles("/Enemies", "*.xml");
+            mapsToLoad = Directory.GetFiles("/Maps", "*.xml");
             base.Initialize();
         }
 
@@ -39,7 +44,6 @@ namespace Slutprojekt
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
             // TODO: use this.Content to load your game content here
         }
 
@@ -74,9 +78,10 @@ namespace Slutprojekt
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin();
 
+            spriteBatch.End();
             // TODO: Add your drawing code here
-
             base.Draw(gameTime);
         }
     }

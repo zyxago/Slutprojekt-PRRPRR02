@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Slutprojekt
+namespace Slutprojekt.API
 {
-    class NodeList <T>
+    class Success
     {
-        public NodeList()
-        {
-
-        }
+        public int total { get; set; }
     }
 }
