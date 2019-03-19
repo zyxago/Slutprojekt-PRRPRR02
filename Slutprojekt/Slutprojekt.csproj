@@ -58,7 +58,7 @@
     <Compile Include="GameObjects\Towers\SpellTower.cs" />
     <Compile Include="Hud.cs" />
     <Compile Include="LoadData.cs" />
-    <Compile Include="Maps.cs" />
+    <Compile Include="Map.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Queue.cs" />
     <Compile Include="Options.cs" />

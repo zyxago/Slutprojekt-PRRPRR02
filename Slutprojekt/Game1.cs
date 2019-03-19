@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Slutprojekt
@@ -12,6 +13,9 @@ namespace Slutprojekt
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        List<Map> mapList = new List<Map>();
+        List<Towers> towerList = new List<Towers>();
+        List<Enemies> enemyList = new List<Enemies>();
         string[] towersToLoad;
         string[] enemiesToLoad;
         string[] mapsToLoad;
@@ -43,6 +47,7 @@ namespace Slutprojekt
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
+            mapList = LoadData.Load<Map>(mapsToLoad);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
         }
