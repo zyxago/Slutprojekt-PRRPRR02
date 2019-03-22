@@ -44,6 +44,7 @@
     <Compile Include="API\Contents.cs" />
     <Compile Include="API\Quote.cs" />
     <Compile Include="API\Success.cs" />
+    <Compile Include="ConstructTexture.cs" />
     <Compile Include="EntitySpawner.cs" />
     <Compile Include="GameObjects\Enemies.cs" />
     <Compile Include="Game1.cs" />
@@ -74,6 +75,7 @@
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>

@@ -47,7 +47,7 @@ namespace Slutprojekt
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            mapList = LoadData.Load<Map>(mapsToLoad);
+            mapList = LoadData.Loadmaps(mapsToLoad);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
         }
