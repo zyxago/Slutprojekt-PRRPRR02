@@ -44,14 +44,13 @@
     <Compile Include="API\Contents.cs" />
     <Compile Include="API\Quote.cs" />
     <Compile Include="API\Success.cs" />
-    <Compile Include="ConstructTexture.cs" />
     <Compile Include="EntitySpawner.cs" />
-    <Compile Include="GameObjects\Enemies.cs" />
+    <Compile Include="GameObjects\Enemy.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="GameObjects\Enemies\ElitType.cs" />
     <Compile Include="GameObjects\Enemies\NormalType.cs" />
-    <Compile Include="GameObjects\Projectiles.cs" />
+    <Compile Include="GameObjects\Projectile.cs" />
     <Compile Include="GameObjects\Projectiles\PierceProjectile.cs" />
     <Compile Include="GameObjects\Projectiles\SplashProjectile.cs" />
     <Compile Include="GameObjects\Towers\ClassicTower.cs" />
@@ -65,8 +64,8 @@
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Spells.cs" />
-    <Compile Include="GameObjects\Towers.cs" />
+    <Compile Include="Spell.cs" />
+    <Compile Include="GameObjects\Tower.cs" />
     <Compile Include="Spells\EntitySpells.cs" />
     <Compile Include="Spells\TowerSpells.cs" />
   </ItemGroup>

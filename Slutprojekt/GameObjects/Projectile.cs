@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Slutprojekt
+namespace Slutprojekt.GameObjects
 {
-    class Spells
+    class Projectile
     {
+        public Projectile()
+        {
+
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -11,7 +12,7 @@ namespace Slutprojekt
     /// </summary>
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
+        public static GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         List<Map> mapList = new List<Map>();
         List<Towers> towerList = new List<Towers>();
@@ -22,6 +23,8 @@ namespace Slutprojekt
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 640;
             Content.RootDirectory = "Content";
         }
 
@@ -34,9 +37,10 @@ namespace Slutprojekt
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            towersToLoad = Directory.GetFiles("/Towers", "*.xml");
-            enemiesToLoad = Directory.GetFiles("/Enemies", "*.xml");
-            mapsToLoad = Directory.GetFiles("/Maps", "*.xml");
+            IsMouseVisible = true;
+            towersToLoad = Directory.GetFiles($"{Environment.CurrentDirectory}\\Towers", "*.xml");
+            enemiesToLoad = Directory.GetFiles($"{Environment.CurrentDirectory}\\Enemies", "*.xml");
+            mapsToLoad = Directory.GetFiles($"{Environment.CurrentDirectory}\\Maps", "*.xml");
             base.Initialize();
         }
 
@@ -47,7 +51,7 @@ namespace Slutprojekt
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            mapList = LoadData.Loadmaps(mapsToLoad);
+            mapList = LoadData.LoadMaps(mapsToLoad);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
         }
@@ -84,7 +88,7 @@ namespace Slutprojekt
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
-
+            mapList[0].Draw(spriteBatch);
             spriteBatch.End();
             // TODO: Add your drawing code here
             base.Draw(gameTime);
