@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt
 {
-    class GameObject
+    abstract class GameObject
     {
         Rectangle Drawbox { get; set; }
         Texture2D Texture { get; set; }
@@ -17,6 +17,11 @@ namespace Slutprojekt
         {
             Drawbox = drawbox;
             Texture = texture;
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Texture, Drawbox, Color.White);
         }
     }
 }

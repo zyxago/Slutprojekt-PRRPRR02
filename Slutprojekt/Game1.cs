@@ -15,8 +15,8 @@ namespace Slutprojekt
         public static GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         List<Map> mapList = new List<Map>();
-        List<Towers> towerList = new List<Towers>();
-        List<Enemies> enemyList = new List<Enemies>();
+        List<Tower> towerList = new List<Tower>();
+        List<Enemy> enemyList = new List<Enemy>();
         string[] towersToLoad;
         string[] enemiesToLoad;
         string[] mapsToLoad;
@@ -52,6 +52,7 @@ namespace Slutprojekt
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             mapList = LoadData.LoadMaps(mapsToLoad);
+            towerList = LoadData.Load<Tower>(towersToLoad);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
         }

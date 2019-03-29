@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt.GameObjects
 {
-    class Projectile
+    abstract class Projectile
     {
         public Projectile()
         {

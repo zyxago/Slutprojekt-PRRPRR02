@@ -12,7 +12,13 @@ namespace Slutprojekt
     {
         public static Texture2D CurrentTexture { get; set; }
 
-        //enum men vart i menyn man är? tex main menu, option, select map
+        public enum Location
+        {
+            MainMenu,
+            Options, 
+            MapSelector,
+            TowerSelector
+        };
         //API
         public static Success success { get; set; }
         public static Contents contents { get; set; }

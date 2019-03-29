@@ -12,7 +12,7 @@ using System.Xml;
 
 namespace Slutprojekt
 {
-    static class LoadData
+    static class LoadData//TODO: FIXA TRY, CATCH PÅ ALLT SOM HAR MED FILER ATT GÖRA
     {
         /// <summary>
         /// 
@@ -34,36 +34,41 @@ namespace Slutprojekt
         public static List<T> Load<T>(string[] paths) where T : GameObject
         {
             Texture2D texture;
+            string texturePath;
+            string type = null; //bättre namn behövs nog
+            Microsoft.Xna.Framework.Rectangle drawBox;
             List<T> objects = new List<T>();
             foreach(string path in paths)
             {
                 XmlDocument docTemp = XmlLoad(path);
-                string texturePath = docTemp.SelectSingleNode("/Map/Texture").InnerText;
-                if (typeof(T) == typeof(Towers))
+                if (typeof(T) == typeof(Tower))
                 {
-                    if (typeof(T) == typeof(ClassicTower))
+                    foreach(XmlNode xnode in docTemp)
                     {
-
+                        if (xnode.Name == "CTower")
+                        {
+                            type = "CTower";
+                            break;
+                        }
+                        else if (xnode.Name == "RTower")
+                        {
+                            type = "RTower";
+                            break;
+                        }
+                        else if(xnode.Name == "STower")
+                        {
+                            type = "STower";
+                            break;
+                        }
                     }
-                    else if (typeof(T) == typeof(RoadTower))
-                    {
-
-                    }
-                    else if (typeof(T) == typeof(SpellTower))
-                    {
-
-                    }
+                    texturePath = docTemp.SelectSingleNode($"/{type}/Texture").InnerText;
+                    texture = LoadTexture2D(Game1.graphics.GraphicsDevice, texturePath);
+                    drawBox = new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height);
+                    objects.Add(new ClassicTower(drawBox, texture) as T);
                 }
-                else if (typeof(T) == typeof(Enemies))
+                else if (typeof(T) == typeof(Enemy))
                 {
-                    if (typeof(T) == typeof(NormalType))
-                    {
 
-                    }
-                    else if (typeof(T) == typeof(ElitType))
-                    {
-
-                    }
                 }
             }
             return objects;
