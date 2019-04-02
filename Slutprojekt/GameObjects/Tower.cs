@@ -15,6 +15,7 @@ namespace Slutprojekt
         public float AttackDMG { get; set; }
         public enum ProjectileType
         {
+            none,
             splash,
             pierce
         };
@@ -25,6 +26,7 @@ namespace Slutprojekt
             AttackRange = Arange;
             AttackSpeed = Aspeed;
             AttackDMG = Admg;
+            Ptype = type;
         }
 
         public void Update()

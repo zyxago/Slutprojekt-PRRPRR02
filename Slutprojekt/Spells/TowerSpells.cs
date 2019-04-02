@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,9 @@ namespace Slutprojekt.Spells
 {
     static class TowerSpells
     {
+        public static void Slow(float radius, Vector2 center)
+        {
 
+        }
     }
 }

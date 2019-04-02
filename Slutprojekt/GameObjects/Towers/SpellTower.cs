@@ -8,5 +8,6 @@ namespace Slutprojekt.GameObjects.Towers
 {
     class SpellTower
     {
+        
     }
 }
