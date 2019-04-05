@@ -43,9 +43,11 @@ namespace Slutprojekt
                 XmlDocument docTemp = XmlLoad(path);
                 if (typeof(T) == typeof(Tower))
                 {
-                    float aRange, aSpeed, aDmg, roadHp, spellCooldown, spellRadius;
-                    string spellType = null;
-                    Tower.ProjectileType projectileType = Tower.ProjectileType.none;
+                    Texture2D projectileTexture = null;
+                    string projectiletexturePath = null;
+                    float aRange = 0, aSpeed = 0, aDmg = 0, roadHp = 0, spellCooldown = 0, spellRadius = 0;
+                    int towerHp = 0;
+                    string spellType = null, projectileType = null;
                     foreach(XmlNode xnode in docTemp)
                     {
                         if (xnode.Name == "CTower")
@@ -69,34 +71,39 @@ namespace Slutprojekt
                         //Allt detta ska läsas in på alla sorters torn
                         texturePath = docTemp.SelectSingleNode($"/{type}/Texture").InnerText;
                         texture = LoadTexture2D(Game1.graphics.GraphicsDevice, texturePath);
-                        float.TryParse(docTemp.SelectSingleNode($"/{type}/Attack/range").InnerText, out aRange);
-                        float.TryParse(docTemp.SelectSingleNode($"/{type}/Attack/speed").InnerText, out aSpeed);
-                        float.TryParse(docTemp.SelectSingleNode($"/{type}/Attack/dmg").InnerText, out aDmg);
-                        if (docTemp.SelectSingleNode($"/{type}/Attack/type").InnerText == "spalsh")
-                            projectileType = Tower.ProjectileType.splash;
-                        else if (docTemp.SelectSingleNode($"/{type}/Attack/type").InnerText == "pierce")
-                            projectileType = Tower.ProjectileType.pierce;
-                        else
-                            continue;
-                        //Om det är ett RoadTower ska denna också läsas in
-                        if(type == "RTower")
+                        drawBox = new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height);
+                        if (type != "STower")
                         {
-                            float.TryParse(docTemp.SelectSingleNode($"/{type}/Hp").InnerText, out roadHp);
+                            projectiletexturePath = docTemp.SelectSingleNode($"/{type}/Attack/projectileTexture").InnerText;
+                            projectileTexture = LoadTexture2D(Game1.graphics.GraphicsDevice, projectiletexturePath);
+                            float.TryParse(docTemp.SelectSingleNode($"/{type}/Attack/range").InnerText, out aRange);
+                            float.TryParse(docTemp.SelectSingleNode($"/{type}/Attack/speed").InnerText, out aSpeed);
+                            float.TryParse(docTemp.SelectSingleNode($"/{type}/Attack/dmg").InnerText, out aDmg);
+                            if (docTemp.SelectSingleNode($"/{type}/Attack/type").InnerText == "pierce")
+                                projectileType = docTemp.SelectSingleNode($"/{type}/Attack/type").InnerText;
+                            else if (docTemp.SelectSingleNode($"/{type}/Attack/type").InnerText == "splash")
+                                projectileType = docTemp.SelectSingleNode($"/{type}/Attack/type").InnerText;
+                            else
+                                continue;
+                            //Om det är ett road tower ska denna också läsas in
+                            if (type == "RTower")
+                            {
+                                float.TryParse(docTemp.SelectSingleNode($"/{type}/Hp").InnerText, out roadHp);
+                            }
                         }
-                        //och om det är ett SpellTower ska dessa in 
                         else if(type == "STower")
                         {
                             float.TryParse(docTemp.SelectSingleNode($"/{type}/Spell/cooldown").InnerText, out spellCooldown);
                             float.TryParse(docTemp.SelectSingleNode($"/{type}/Spell/radius").InnerText, out spellRadius);
-                            foreach(string Spellkey in Spell.Spells.Keys)
+                            foreach (string Spellkey in Spell.Spells.Keys)
                             {
-                                if(docTemp.SelectSingleNode($"{type}/Spell/type").InnerText == Spellkey)
+                                if (docTemp.SelectSingleNode($"{type}/Spell/type").InnerText == Spellkey)
                                 {
                                     spellType = docTemp.SelectSingleNode($"{type}/Spell/type").InnerText;
                                     break;
                                 }
                             }
-                            if(spellType == null)
+                            if (spellType == null)
                             {
                                 continue;
                             }
@@ -106,17 +113,63 @@ namespace Slutprojekt
                     {
                         continue;
                     }
-                    drawBox = new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height);
                     if (type == "CTower")
-                        objects.Add(new ClassicTower(drawBox, texture, aRange, aSpeed, aDmg, projectileType) as T);
+                        objects.Add(new ClassicTower(drawBox, texture, projectileTexture, aRange, aSpeed, aDmg, projectileType) as T);
                     else if (type == "RTower")
-                        objects.Add(new RoadTower() as T);
+                        objects.Add(new RoadTower(drawBox, texture, projectileTexture, aRange, aSpeed, aDmg, projectileType, towerHp) as T);
                     else if (type == "STower")
-                        objects.Add(new SpellTower() as T);
+                        objects.Add(new SpellTower(drawBox, texture, spellType, spellCooldown, spellRadius) as T);
                 }
                 else if (typeof(T) == typeof(Enemy))
                 {
-
+                    float hp, speed;
+                    string resistance, enemySpell;
+                    foreach (XmlNode xnode in docTemp)
+                    {
+                        if (xnode.Name == "NEnemy")
+                        {
+                            type = "NEnemy";
+                            break;
+                        }
+                        else if (xnode.Name == "EEnemy")
+                        {
+                            type = "EEnemy";
+                            break;
+                        }
+                    }
+                    try
+                    {
+                        texturePath = docTemp.SelectSingleNode($"{type}/Texture").InnerText;
+                        texture = LoadTexture2D(Game1.graphics.GraphicsDevice, texturePath);
+                        float.TryParse(docTemp.SelectSingleNode($"/{type}/Speed").InnerText, out speed);
+                        float.TryParse(docTemp.SelectSingleNode($"/{type}/Hp").InnerText, out hp);
+                        if (docTemp.SelectSingleNode($"/{type}/Resistance").InnerText == "splash")
+                        {
+                            resistance = docTemp.SelectSingleNode($"/{type}/Resistance").InnerText;
+                        }
+                        else if (docTemp.SelectSingleNode($"/{type}/Resistance").InnerText == "pierce")
+                        {
+                            resistance = docTemp.SelectSingleNode($"/{type}/Resistance").InnerText;
+                        }
+                        else
+                            continue;
+                        if(type == "EEnemy")
+                        {
+                            enemySpell = docTemp.SelectSingleNode($"/{type}/Ability").InnerText;
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                    if(type == "NEnemy")
+                    {
+                        objects.Add(new NormalType() as T);
+                    }
+                    else if(type == "EEnemy")
+                    {
+                        objects.Add(new ElitType() as T);
+                    }
                 }
             }
             return objects;

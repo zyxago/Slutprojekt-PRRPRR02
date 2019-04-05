@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt
 {
-    abstract class Spell
+    static class Spell
     {
         public static Dictionary<string, Action<float, Vector2>> Spells = new Dictionary<string, Action<float, Vector2>>();
-        public void LoadSpells()
+        public static void LoadSpells()
         {
             Spells.Add("slow", TowerSpells.Slow);
         }

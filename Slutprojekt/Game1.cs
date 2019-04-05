@@ -53,6 +53,7 @@ namespace Slutprojekt
             // Create a new SpriteBatch, which can be used to draw textures.
             mapList = LoadData.LoadMaps(mapsToLoad);
             towerList = LoadData.Load<Tower>(towersToLoad);
+            enemyList = LoadData.Load<Enemy>(enemiesToLoad);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
         }
@@ -75,7 +76,22 @@ namespace Slutprojekt
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            if(Menu.location == Menu.Location.MainMenu)
+            {
 
+            }
+            else if(Menu.location == Menu.Location.Options)
+            {
+
+            }
+            else if(Menu.location == Menu.Location.MapSelector)
+            {
+
+            }
+            else if(Menu.location == Menu.Location.TowerSelector)
+            {
+
+            }
             // TODO: Add your update logic here
 
             base.Update(gameTime);
