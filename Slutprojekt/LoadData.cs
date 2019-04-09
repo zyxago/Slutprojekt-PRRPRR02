@@ -38,36 +38,36 @@ namespace Slutprojekt
             string type = null;
             Microsoft.Xna.Framework.Rectangle drawBox;
             List<T> objects = new List<T>();
-            foreach(string path in paths)
+            foreach (string path in paths)
             {
-                XmlDocument docTemp = XmlLoad(path);
-                if (typeof(T) == typeof(Tower))
+                try
                 {
-                    Texture2D projectileTexture = null;
-                    string projectiletexturePath = null;
-                    float aRange = 0, aSpeed = 0, aDmg = 0, roadHp = 0, spellCooldown = 0, spellRadius = 0;
-                    int towerHp = 0;
-                    string spellType = null, projectileType = null;
-                    foreach(XmlNode xnode in docTemp)
+                    XmlDocument docTemp = XmlLoad(path);
+                    if (typeof(T) == typeof(Tower))
                     {
-                        if (xnode.Name == "CTower")
+                        Texture2D projectileTexture = null;
+                        string projectiletexturePath = null;
+                        float aRange = 0, aSpeed = 0, aDmg = 0, roadHp = 0, spellCooldown = 0, spellRadius = 0;
+                        int towerHp = 0;
+                        string spellType = null, projectileType = null;
+                        foreach (XmlNode xnode in docTemp)
                         {
-                            type = "CTower";
-                            break;
+                            if (xnode.Name == "CTower")
+                            {
+                                type = "CTower";
+                                break;
+                            }
+                            else if (xnode.Name == "RTower")
+                            {
+                                type = "RTower";
+                                break;
+                            }
+                            else if (xnode.Name == "STower")
+                            {
+                                type = "STower";
+                                break;
+                            }
                         }
-                        else if (xnode.Name == "RTower")
-                        {
-                            type = "RTower";
-                            break;
-                        }
-                        else if(xnode.Name == "STower")
-                        {
-                            type = "STower";
-                            break;
-                        }
-                    }
-                    try
-                    {
                         //Allt detta ska läsas in på alla sorters torn
                         texturePath = docTemp.SelectSingleNode($"/{type}/Texture").InnerText;
                         texture = LoadTexture2D(Game1.graphics.GraphicsDevice, texturePath);
@@ -91,7 +91,7 @@ namespace Slutprojekt
                                 float.TryParse(docTemp.SelectSingleNode($"/{type}/Hp").InnerText, out roadHp);
                             }
                         }
-                        else if(type == "STower")
+                        else if (type == "STower")
                         {
                             float.TryParse(docTemp.SelectSingleNode($"/{type}/Spell/cooldown").InnerText, out spellCooldown);
                             float.TryParse(docTemp.SelectSingleNode($"/{type}/Spell/radius").InnerText, out spellRadius);
@@ -108,37 +108,30 @@ namespace Slutprojekt
                                 continue;
                             }
                         }
+                        if (type == "CTower")
+                            objects.Add(new ClassicTower(drawBox, texture, projectileTexture, aRange, aSpeed, aDmg, projectileType) as T);
+                        else if (type == "RTower")
+                            objects.Add(new RoadTower(drawBox, texture, projectileTexture, aRange, aSpeed, aDmg, projectileType, towerHp) as T);
+                        else if (type == "STower")
+                            objects.Add(new SpellTower(drawBox, texture, spellType, spellCooldown, spellRadius) as T);
                     }
-                    catch
+                    else if (typeof(T) == typeof(Enemy))
                     {
-                        continue;
-                    }
-                    if (type == "CTower")
-                        objects.Add(new ClassicTower(drawBox, texture, projectileTexture, aRange, aSpeed, aDmg, projectileType) as T);
-                    else if (type == "RTower")
-                        objects.Add(new RoadTower(drawBox, texture, projectileTexture, aRange, aSpeed, aDmg, projectileType, towerHp) as T);
-                    else if (type == "STower")
-                        objects.Add(new SpellTower(drawBox, texture, spellType, spellCooldown, spellRadius) as T);
-                }
-                else if (typeof(T) == typeof(Enemy))
-                {
-                    float hp, speed;
-                    string resistance, enemySpell;
-                    foreach (XmlNode xnode in docTemp)
-                    {
-                        if (xnode.Name == "NEnemy")
+                        float hp, speed;
+                        string resistance, enemySpell;
+                        foreach (XmlNode xnode in docTemp)
                         {
-                            type = "NEnemy";
-                            break;
+                            if (xnode.Name == "NEnemy")
+                            {
+                                type = "NEnemy";
+                                break;
+                            }
+                            else if (xnode.Name == "EEnemy")
+                            {
+                                type = "EEnemy";
+                                break;
+                            }
                         }
-                        else if (xnode.Name == "EEnemy")
-                        {
-                            type = "EEnemy";
-                            break;
-                        }
-                    }
-                    try
-                    {
                         texturePath = docTemp.SelectSingleNode($"{type}/Texture").InnerText;
                         texture = LoadTexture2D(Game1.graphics.GraphicsDevice, texturePath);
                         float.TryParse(docTemp.SelectSingleNode($"/{type}/Speed").InnerText, out speed);
@@ -153,23 +146,23 @@ namespace Slutprojekt
                         }
                         else
                             continue;
-                        if(type == "EEnemy")
+                        if (type == "EEnemy")
                         {
                             enemySpell = docTemp.SelectSingleNode($"/{type}/Ability").InnerText;
                         }
                     }
-                    catch
-                    {
-                        continue;
-                    }
-                    if(type == "NEnemy")
+                    if (type == "NEnemy")
                     {
                         objects.Add(new NormalType() as T);
                     }
-                    else if(type == "EEnemy")
+                    else if (type == "EEnemy")
                     {
                         objects.Add(new ElitType() as T);
                     }
+                }
+                catch
+                {
+                    continue;
                 }
             }
             return objects;
@@ -185,18 +178,25 @@ namespace Slutprojekt
             List<Map> maps = new List<Map>();
             foreach (string path in paths)
             {
-                Queue<Vector2> points = new Queue<Vector2>();
-                XmlDocument docTemp = XmlLoad(path);
-                string texturePath = docTemp.SelectSingleNode("/Map/Texture").InnerText;
-                var pointsTemp = docTemp.SelectNodes("/Map/Path/point");
-                foreach (XmlNode point in pointsTemp)
+                try
                 {
-                    int.TryParse(point.SelectSingleNode("X").InnerText, out int x);
-                    int.TryParse(point.SelectSingleNode("Y").InnerText, out int y);
-                    points.Enqueue(new Vector2(x, y));
+                    Queue<Vector2> points = new Queue<Vector2>();
+                    XmlDocument docTemp = XmlLoad(path);
+                    string texturePath = docTemp.SelectSingleNode("/Map/Texture").InnerText;
+                    var pointsTemp = docTemp.SelectNodes("/Map/Path/point");
+                    foreach (XmlNode point in pointsTemp)
+                    {
+                        int.TryParse(point.SelectSingleNode("X").InnerText, out int x);
+                        int.TryParse(point.SelectSingleNode("Y").InnerText, out int y);
+                        points.Enqueue(new Vector2(x, y));
+                    }
+                    texture = LoadTexture2D(Game1.graphics.GraphicsDevice, texturePath);
+                    maps.Add(new Map(texture, points));
                 }
-                texture = LoadTexture2D(Game1.graphics.GraphicsDevice, texturePath);
-                maps.Add(new Map(texture, points));
+                catch
+                {
+                    continue;
+                }
             }
             return maps;
         }
@@ -209,18 +209,25 @@ namespace Slutprojekt
         public static Texture2D LoadTexture2D(GraphicsDevice graphicsDevice, string texturePath)
         {
             Texture2D Texture;
-            Bitmap picture = new Bitmap(texturePath);
-            Microsoft.Xna.Framework.Color[] rawData = new Microsoft.Xna.Framework.Color[picture.Width * picture.Height];
-            for (int y = 0; y < picture.Height; y++)
+            try
             {
-                for(int x = 0; x < picture.Width; x++)
+                Bitmap picture = new Bitmap(texturePath);
+                Microsoft.Xna.Framework.Color[] rawData = new Microsoft.Xna.Framework.Color[picture.Width * picture.Height];
+                for (int y = 0; y < picture.Height; y++)
                 {
-                    System.Drawing.Color tempColor = picture.GetPixel(x, y);
-                    rawData[y * picture.Width + x] = new Microsoft.Xna.Framework.Color(tempColor.R, tempColor.G, tempColor.B);
+                    for (int x = 0; x < picture.Width; x++)
+                    {
+                        System.Drawing.Color tempColor = picture.GetPixel(x, y);
+                        rawData[y * picture.Width + x] = new Microsoft.Xna.Framework.Color(tempColor.R, tempColor.G, tempColor.B);
+                    }
                 }
+                Texture = new Texture2D(graphicsDevice, picture.Width, picture.Height);
+                Texture.SetData(rawData);
             }
-            Texture = new Texture2D(graphicsDevice, picture.Width , picture.Height);
-            Texture.SetData(rawData);
+            catch (Exception e)
+            {
+                return Game1.ErrorTex;
+            }
             return Texture;
         }
     }

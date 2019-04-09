@@ -14,12 +14,23 @@ namespace Slutprojekt
     {
         public static GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        SpriteFont font;
+        KeyboardState KeyState, prevKeyState;
+        MouseState mouseState, prevMouseState;
+        Rectangle mouseBox;
         List<Map> mapList = new List<Map>();
         List<Tower> towerList = new List<Tower>();
         List<Enemy> enemyList = new List<Enemy>();
+        public static Texture2D ErrorTex;
         string[] towersToLoad;
         string[] enemiesToLoad;
         string[] mapsToLoad;
+        enum GameState
+        {
+            Menu,
+            InGame
+        }
+        GameState State;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -38,6 +49,8 @@ namespace Slutprojekt
         {
             // TODO: Add your initialization logic here
             IsMouseVisible = true;
+            State = GameState.Menu;
+            Menu.location = Menu.Location.MainMenu;
             towersToLoad = Directory.GetFiles($"{Environment.CurrentDirectory}\\Towers", "*.xml");
             enemiesToLoad = Directory.GetFiles($"{Environment.CurrentDirectory}\\Enemies", "*.xml");
             mapsToLoad = Directory.GetFiles($"{Environment.CurrentDirectory}\\Maps", "*.xml");
@@ -50,12 +63,13 @@ namespace Slutprojekt
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+            font = Content.Load<SpriteFont>("font");
+            ErrorTex = Content.Load<Texture2D>("ErrorTexture");
+            Menu.Load();
             mapList = LoadData.LoadMaps(mapsToLoad);
             towerList = LoadData.Load<Tower>(towersToLoad);
             enemyList = LoadData.Load<Enemy>(enemiesToLoad);
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -76,24 +90,38 @@ namespace Slutprojekt
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            if(Menu.location == Menu.Location.MainMenu)
+            KeyState = Keyboard.GetState();
+            mouseState = Mouse.GetState();
+            mouseBox = new Rectangle(Mouse.GetState().Position, new Point(10));
+            if(State == GameState.Menu)
             {
+                if (Menu.location == Menu.Location.MainMenu)
+                {
+                    if(mouseState.LeftButton != prevMouseState.LeftButton && mouseBox.Intersects(Menu.MenuBoxes["start"]))
+                    {
+                        Menu.location = Menu.Location.MapSelector;
+                    }
+                }
+                else if (Menu.location == Menu.Location.Options)
+                {
 
-            }
-            else if(Menu.location == Menu.Location.Options)
-            {
+                }
+                else if (Menu.location == Menu.Location.MapSelector)
+                {
 
-            }
-            else if(Menu.location == Menu.Location.MapSelector)
-            {
+                }
+                else if (Menu.location == Menu.Location.TowerSelector)
+                {
 
+                }
             }
-            else if(Menu.location == Menu.Location.TowerSelector)
+            else if(State == GameState.InGame)
             {
 
             }
             // TODO: Add your update logic here
-
+            prevKeyState = Keyboard.GetState();
+            prevMouseState = Mouse.GetState();
             base.Update(gameTime);
         }
 
@@ -105,7 +133,16 @@ namespace Slutprojekt
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
-            mapList[0].Draw(spriteBatch);
+            
+            if (State == GameState.Menu)
+            {
+                Menu.Draw(spriteBatch);
+            }
+            else if (State == GameState.InGame)
+            {
+
+            }
+            spriteBatch.DrawString(font, $"{mouseState.Position}", new Vector2(50, 50), Color.Black);
             spriteBatch.End();
             // TODO: Add your drawing code here
             base.Draw(gameTime);
