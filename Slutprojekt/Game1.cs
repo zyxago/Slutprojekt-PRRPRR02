@@ -16,8 +16,7 @@ namespace Slutprojekt
         SpriteBatch spriteBatch;
         SpriteFont font;
         KeyboardState KeyState, prevKeyState;
-        MouseState mouseState, prevMouseState;
-        Rectangle mouseBox;
+        public static MouseState mouseState, prevMouseState;
         List<Map> mapList = new List<Map>();
         List<Tower> towerList = new List<Tower>();
         List<Enemy> enemyList = new List<Enemy>();
@@ -25,12 +24,15 @@ namespace Slutprojekt
         string[] towersToLoad;
         string[] enemiesToLoad;
         string[] mapsToLoad;
-        enum GameState
+        public static int MapPlaying { get; private set; }
+        public enum GameState
         {
             Menu,
-            InGame
+            InGame,
+            Quit
         }
-        GameState State;
+
+        public static GameState State;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -67,7 +69,7 @@ namespace Slutprojekt
             font = Content.Load<SpriteFont>("font");
             ErrorTex = Content.Load<Texture2D>("ErrorTexture");
             Menu.Load();
-            mapList = LoadData.LoadMaps(mapsToLoad);
+            mapList = LoadData.Load(mapsToLoad);
             towerList = LoadData.Load<Tower>(towersToLoad);
             enemyList = LoadData.Load<Enemy>(enemiesToLoad);
         }
@@ -92,37 +94,26 @@ namespace Slutprojekt
                 Exit();
             KeyState = Keyboard.GetState();
             mouseState = Mouse.GetState();
-            mouseBox = new Rectangle(Mouse.GetState().Position, new Point(10));
-            if(State == GameState.Menu)
+            if (State == GameState.Menu)
             {
-                if (Menu.location == Menu.Location.MainMenu)
-                {
-                    if(mouseState.LeftButton != prevMouseState.LeftButton && mouseBox.Intersects(Menu.MenuBoxes["start"]))
-                    {
-                        Menu.location = Menu.Location.MapSelector;
-                    }
-                }
-                else if (Menu.location == Menu.Location.Options)
-                {
-
-                }
-                else if (Menu.location == Menu.Location.MapSelector)
-                {
-
-                }
-                else if (Menu.location == Menu.Location.TowerSelector)
-                {
-
-                }
+                Menu.Update();
             }
-            else if(State == GameState.InGame)
+            else if (State == GameState.InGame)
             {
 
             }
+            else if (State == GameState.Quit)
+                Exit();
             // TODO: Add your update logic here
             prevKeyState = Keyboard.GetState();
             prevMouseState = Mouse.GetState();
             base.Update(gameTime);
+        }
+
+        public static void StartGame(int mapIndex)
+        {
+            MapPlaying = mapIndex;
+            State = GameState.InGame;
         }
 
         /// <summary>
@@ -136,11 +127,11 @@ namespace Slutprojekt
             
             if (State == GameState.Menu)
             {
-                Menu.Draw(spriteBatch);
+                Menu.Draw(spriteBatch, mapList);
             }
             else if (State == GameState.InGame)
             {
-
+               mapList[MapPlaying].Draw(spriteBatch);
             }
             spriteBatch.DrawString(font, $"{mouseState.Position}", new Vector2(50, 50), Color.Black);
             spriteBatch.End();

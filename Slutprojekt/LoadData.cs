@@ -172,7 +172,7 @@ namespace Slutprojekt
         /// </summary>
         /// <param name="paths"></param>
         /// <returns>En lista med Map objekt</returns>
-        public static List<Map> LoadMaps(string[] paths)
+        public static List<Map> Load(string[] paths)
         {
             Texture2D texture;
             List<Map> maps = new List<Map>();
