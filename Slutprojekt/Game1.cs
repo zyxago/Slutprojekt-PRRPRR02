@@ -21,6 +21,7 @@ namespace Slutprojekt
         List<Tower> towerList = new List<Tower>();
         List<Enemy> enemyList = new List<Enemy>();
         public static Texture2D ErrorTex;
+        Texture2D hotbarTex;
         string[] towersToLoad;
         string[] enemiesToLoad;
         string[] mapsToLoad;
@@ -53,6 +54,7 @@ namespace Slutprojekt
             IsMouseVisible = true;
             State = GameState.Menu;
             Menu.location = Menu.Location.MainMenu;
+            Spell.LoadSpells();
             towersToLoad = Directory.GetFiles($"{Environment.CurrentDirectory}\\Towers", "*.xml");
             enemiesToLoad = Directory.GetFiles($"{Environment.CurrentDirectory}\\Enemies", "*.xml");
             mapsToLoad = Directory.GetFiles($"{Environment.CurrentDirectory}\\Maps", "*.xml");
@@ -68,6 +70,7 @@ namespace Slutprojekt
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("font");
             ErrorTex = Content.Load<Texture2D>("ErrorTexture");
+            hotbarTex = Content.Load<Texture2D>("TowerBar");
             Menu.Load();
             mapList = LoadData.Load(mapsToLoad);
             towerList = LoadData.Load<Tower>(towersToLoad);
@@ -103,8 +106,9 @@ namespace Slutprojekt
 
             }
             else if (State == GameState.Quit)
+            {
                 Exit();
-            // TODO: Add your update logic here
+            }
             prevKeyState = Keyboard.GetState();
             prevMouseState = Mouse.GetState();
             base.Update(gameTime);
@@ -112,7 +116,7 @@ namespace Slutprojekt
 
         public static void StartGame(int mapIndex)
         {
-            MapPlaying = mapIndex;
+            MapPlaying = mapIndex-1;
             State = GameState.InGame;
         }
 
@@ -131,11 +135,15 @@ namespace Slutprojekt
             }
             else if (State == GameState.InGame)
             {
-               mapList[MapPlaying].Draw(spriteBatch);
+                mapList[MapPlaying].Draw(spriteBatch);
+                spriteBatch.Draw(hotbarTex, new Rectangle(0, 560, 800, 80), Color.White);
+                for(int i = 0; i < towerList.Count && i <= 8; i++)
+                {
+                    spriteBatch.Draw(towerList[i].Texture, new Rectangle((10 + 100 * i), 570, 80, 60), Color.White);//FLYTTA TILL HUD KLASSEN
+                }
             }
-            spriteBatch.DrawString(font, $"{mouseState.Position}", new Vector2(50, 50), Color.Black);
+            spriteBatch.DrawString(font, $"{mouseState.Position}", new Vector2(50, 50), Color.Black);//Ta bort sen!
             spriteBatch.End();
-            // TODO: Add your drawing code here
             base.Draw(gameTime);
         }
     }

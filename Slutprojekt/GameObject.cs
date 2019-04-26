@@ -11,7 +11,7 @@ namespace Slutprojekt
     abstract class GameObject
     {
         Rectangle Drawbox { get; set; }
-        Texture2D Texture { get; set; }
+        public Texture2D Texture { get; set; }
         float Radius { get; set; }
         public GameObject(Rectangle drawbox, Texture2D texture)
         {

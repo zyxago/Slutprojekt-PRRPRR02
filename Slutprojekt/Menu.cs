@@ -70,19 +70,22 @@ namespace Slutprojekt
                 if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["mapSlot1"].Contains(Game1.mouseState.Position))
                 {
                     location = Location.InGame;
-                    Game1.StartGame(Page);
+                    Game1.StartGame(Page * 1);
                 }
                 else if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["mapSlot2"].Contains(Game1.mouseState.Position))
                 {
-
+                    location = Location.InGame;
+                    Game1.StartGame(Page * 2);
                 }
                 else if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["mapSlot3"].Contains(Game1.mouseState.Position))
                 {
-
+                    location = Location.InGame;
+                    Game1.StartGame(Page * 3);
                 }
                 else if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["mapSlot4"].Contains(Game1.mouseState.Position))
                 {
-
+                    location = Location.InGame;
+                    Game1.StartGame(Page * 4);
                 }
                 else if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["arrowLeft"].Contains(Game1.mouseState.Position))
                 {
