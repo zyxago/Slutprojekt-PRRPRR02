@@ -10,10 +10,10 @@ namespace Slutprojekt.GameObjects.Towers
 {
     class SpellTower : Tower
     {
-        string Spell;
-        public float Cooldown { get; set; }
-        public float SpellRadius { get; set; }
-        public SpellTower(Rectangle drawBox, Texture2D texture, string spell, float spellCooldown, float spellRadius) :base(drawBox, texture)
+        public string Spell { get; private set; }
+        public float Cooldown { get; private set; }
+        public float SpellRadius { get; private set; }
+        public SpellTower(Rectangle drawBox, Texture2D texture, int cost, string spell, float spellCooldown, float spellRadius) :base(drawBox, texture, cost)
         {
             Spell = spell;
             Cooldown = spellCooldown;

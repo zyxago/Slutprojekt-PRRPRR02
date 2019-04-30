@@ -9,12 +9,15 @@ namespace Slutprojekt
     class Queue<T>
     {
         T[] queue;
-        public int Count = 0;
+        public int Count { get; private set; } = 0;
         public Queue()
         {
             queue = new T[16];
         }
-
+        /// <summary>
+        /// Add object to queue
+        /// </summary>
+        /// <param name="data">Data or object you want to add to queue</param>
         public void Enqueue(T data)
         {
             if(queue.Length == Count)
@@ -25,7 +28,10 @@ namespace Slutprojekt
             }
             queue[Count++] = data;
         }
-
+        /// <summary>
+        /// Return first object in queue and then remove it from the queue
+        /// </summary>
+        /// <returns>Returns first object from queue</returns>
         public T Dequeue()
         {
             T value = queue[0];
@@ -38,10 +44,25 @@ namespace Slutprojekt
             Count--;
             return value;
         }
-
+        /// <summary>
+        /// Return first object in queue 
+        /// </summary>
+        /// <returns>Returns first object from queue</returns>
         public T Peek()
         {
             return queue[0];
+        }
+        /// <summary>
+        /// Checks if queue is empty
+        /// Returns TRUE if empty, FALSE if not empty
+        /// </summary>
+        /// <returns>TRUE if empty, FALSE if not empty</returns>
+        public bool IsEmpty()
+        {
+            if (Count == 0)
+                return true;
+            else
+                return false;
         }
     }
 }

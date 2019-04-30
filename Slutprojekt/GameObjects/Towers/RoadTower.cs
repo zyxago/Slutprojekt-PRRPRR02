@@ -20,7 +20,7 @@ namespace Slutprojekt.GameObjects.Towers
             pierce
         };
         ProjectileType Ptype { get; set; }
-        public RoadTower(Rectangle drawBox, Texture2D texture, Texture2D projectileTexture, float Arange, float Aspeed, float Admg, string projectileType, int hp) : base(drawBox, texture)
+        public RoadTower(Rectangle drawBox, Texture2D texture, int cost, Texture2D projectileTexture, float Arange, float Aspeed, float Admg, string projectileType, int hp) : base(drawBox, texture, cost)
         {
             AttackRange = Arange;
             AttackSpeed = Aspeed;

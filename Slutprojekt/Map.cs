@@ -10,7 +10,7 @@ namespace Slutprojekt
 {
     class Map
     {
-        public Texture2D Texture;
+        public Texture2D Texture { get; set; }
         private Rectangle DrawBox = Game1.graphics.GraphicsDevice.Viewport.Bounds;
         Queue<Vector2> PathQueue;
         public Map(Texture2D texture, Queue<Vector2> pathQueue)

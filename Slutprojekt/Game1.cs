@@ -14,7 +14,7 @@ namespace Slutprojekt
     {
         public static GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        SpriteFont font;
+        public static SpriteFont font;
         KeyboardState KeyState, prevKeyState;
         public static MouseState mouseState, prevMouseState;
         List<Map> mapList = new List<Map>();
@@ -29,7 +29,7 @@ namespace Slutprojekt
         string[] mapsToLoad;
         public static int MapPlaying { get; private set; }
         bool waveOngoing = false;
-        Rectangle nextWave = new Rectangle()//TODO bestäm plats på den
+        bool spawning = false;
 
         public enum GameState
         {
@@ -60,9 +60,16 @@ namespace Slutprojekt
             State = GameState.Menu;
             Menu.location = Menu.Location.MainMenu;
             Spell.LoadSpells();
-            towersToLoad = Directory.GetFiles($"{Environment.CurrentDirectory}\\Towers", "*.xml");
-            enemiesToLoad = Directory.GetFiles($"{Environment.CurrentDirectory}\\Enemies", "*.xml");
-            mapsToLoad = Directory.GetFiles($"{Environment.CurrentDirectory}\\Maps", "*.xml");
+            try
+            {
+                towersToLoad = Directory.GetFiles($"{Environment.CurrentDirectory}\\Towers", "*.xml");
+                enemiesToLoad = Directory.GetFiles($"{Environment.CurrentDirectory}\\Enemies", "*.xml");
+                mapsToLoad = Directory.GetFiles($"{Environment.CurrentDirectory}\\Maps", "*.xml");
+            }
+            catch(DirectoryNotFoundException e)
+            {
+                throw e;
+            }
             base.Initialize();
         }
 
@@ -80,6 +87,8 @@ namespace Slutprojekt
             mapList = LoadData.Load(mapsToLoad);
             towerList = LoadData.Load<Tower>(towersToLoad);
             enemyList = LoadData.Load<Enemy>(enemiesToLoad);
+            Hud.hotbarTex = hotbarTex;
+            Hud.towerList = towerList;
         }
 
         /// <summary>
@@ -108,10 +117,25 @@ namespace Slutprojekt
             }
             else if (State == GameState.InGame)
             {
-                if(mouseState.LeftButton != prevMouseState.LeftButton && )//TODO fixa rectangle
-                if(waveOngoing == true)
+                if(mouseState.LeftButton != prevMouseState.LeftButton && Hud.NextWave.Contains(mouseState.Position) && waveOngoing == false)
                 {
-                    EntitySpawner.SpawnEnemies();
+                    waveOngoing = true;
+                    spawning = true;
+                    EntitySpawner.NextWave(enemyList);
+                }
+                if (waveOngoing)
+                {
+                    if (spawning == true)
+                    {
+                        if (!EntitySpawner.EnemiesToSpawn.IsEmpty())
+                            EntitySpawner.SpawnNextEnemy(enemyList);
+                        else
+                            spawning = false;
+                    }
+                    if (enemyList.Count == 0 && spawning == false)
+                    {
+                        waveOngoing = false;
+                    }
                 }
             }
             else if (State == GameState.Quit)
@@ -145,13 +169,8 @@ namespace Slutprojekt
             else if (State == GameState.InGame)
             {
                 mapList[MapPlaying].Draw(spriteBatch);
-                spriteBatch.Draw(hotbarTex, new Rectangle(0, 560, 800, 80), Color.White);
-                for(int i = 0; i < towerList.Count && i <= 8; i++)
-                {
-                    spriteBatch.Draw(towerList[i].Texture, new Rectangle((10 + 100 * i), 570, 80, 60), Color.White);//FLYTTA TILL HUD KLASSEN
-                }
+                Hud.Draw(spriteBatch);
             }
-            spriteBatch.DrawString(font, $"{mouseState.Position}", new Vector2(50, 50), Color.Black);//Ta bort sen!
             spriteBatch.End();
             base.Draw(gameTime);
         }

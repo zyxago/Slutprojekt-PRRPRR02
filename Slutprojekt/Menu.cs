@@ -18,8 +18,8 @@ namespace Slutprojekt
         private static int Page { get; set; } = 1;
         public static Texture2D CurrentTexture { get; set; }
         private static Rectangle DrawBox = Game1.graphics.GraphicsDevice.Viewport.Bounds;
-        public static Dictionary<Location, Texture2D> MenuTextures = new Dictionary<Location, Texture2D>();
-        public static Dictionary<string, Rectangle> MenuBoxes = new Dictionary<string, Rectangle>();
+        private static Dictionary<Location, Texture2D> MenuTextures = new Dictionary<Location, Texture2D>();
+        private static Dictionary<string, Rectangle> MenuBoxes = new Dictionary<string, Rectangle>();
         public enum Location
         {
             MainMenu,
@@ -89,12 +89,11 @@ namespace Slutprojekt
                 }
                 else if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["arrowLeft"].Contains(Game1.mouseState.Position))
                 {
-                    if (Page != 1)
-                        Page--;
+
                 }
                 else if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["arrowRight"].Contains(Game1.mouseState.Position))
                 {
-                    Page++;
+
                 }
             }
         }

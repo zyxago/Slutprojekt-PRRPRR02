@@ -26,11 +26,11 @@ namespace Slutprojekt
             return doc;
         }
         /// <summary>
-        /// 
+        /// Laddar in GameObjects såsom torn och fiender
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="paths"></param>
-        /// <returns>En lista med GameObject objekt</returns>
+        /// <typeparam name="T">Tower, Enemy</typeparam>
+        /// <param name="paths">En array med filsökvägar</param>
+        /// <returns></returns>
         public static List<T> Load<T>(string[] paths) where T : GameObject
         {
             Texture2D texture;
@@ -49,6 +49,7 @@ namespace Slutprojekt
                         string projectiletexturePath = null;
                         float aRange = 0, aSpeed = 0, aDmg = 0, roadHp = 0, spellCooldown = 0, spellRadius = 0;
                         int towerHp = 0;
+                        int towerCost = 0;
                         string spellType = null, projectileType = null;
                         foreach (XmlNode xnode in docTemp)
                         {
@@ -68,10 +69,10 @@ namespace Slutprojekt
                                 break;
                             }
                         }
-                        //Allt detta ska läsas in på alla sorters torn
                         texturePath = docTemp.SelectSingleNode($"/{type}/Texture").InnerText;
                         texture = LoadTexture2D(Game1.graphics.GraphicsDevice, texturePath);
                         drawBox = new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height);
+                        int.TryParse(docTemp.SelectSingleNode($"/{type}/Cost").InnerText, out towerCost); //TODO lägg till tower cost i alla torns xml filer
                         if (type != "STower")
                         {
                             projectiletexturePath = docTemp.SelectSingleNode($"/{type}/Attack/projectileTexture").InnerText;
@@ -85,7 +86,6 @@ namespace Slutprojekt
                                 projectileType = docTemp.SelectSingleNode($"/{type}/Attack/type").InnerText;
                             else
                                 continue;
-                            //Om det är ett road tower ska denna också läsas in
                             if (type == "RTower")
                             {
                                 float.TryParse(docTemp.SelectSingleNode($"/{type}/Hp").InnerText, out roadHp);
@@ -109,11 +109,11 @@ namespace Slutprojekt
                             }
                         }
                         if (type == "CTower")
-                            objects.Add(new ClassicTower(drawBox, texture, projectileTexture, aRange, aSpeed, aDmg, projectileType) as T);
+                            objects.Add(new ClassicTower(drawBox, texture, towerCost, projectileTexture, aRange, aSpeed, aDmg, projectileType) as T);
                         else if (type == "RTower")
-                            objects.Add(new RoadTower(drawBox, texture, projectileTexture, aRange, aSpeed, aDmg, projectileType, towerHp) as T);
+                            objects.Add(new RoadTower(drawBox, texture, towerCost, projectileTexture, aRange, aSpeed, aDmg, projectileType, towerHp) as T);
                         else if (type == "STower")
-                            objects.Add(new SpellTower(drawBox, texture, spellType, spellCooldown, spellRadius) as T);
+                            objects.Add(new SpellTower(drawBox, texture, towerCost, spellType, spellCooldown, spellRadius) as T);
                     }
                     else if (typeof(T) == typeof(Enemy))
                     {
@@ -171,6 +171,10 @@ namespace Slutprojekt
                         else if (type == "EEnemy")
                             objects.Add(new ElitType(drawBox, texture) as T);
                     }
+                    else
+                    {
+                        throw new Exception("Invalid data type");
+                    }
                 }
                 catch
                 {
@@ -180,9 +184,9 @@ namespace Slutprojekt
             return objects;
         }
         /// <summary>
-        /// 
+        /// Laddar in kartor utifrpn 'paths' och returnerar en lista med Map object
         /// </summary>
-        /// <param name="paths"></param>
+        /// <param name="paths">En array med filsökvägar</param>
         /// <returns>En lista med Map objekt</returns>
         public static List<Map> Load(string[] paths)
         {
@@ -236,7 +240,7 @@ namespace Slutprojekt
                 Texture = new Texture2D(graphicsDevice, picture.Width, picture.Height);
                 Texture.SetData(rawData);
             }
-            catch (Exception e)
+            catch
             {
                 return Game1.ErrorTex;
             }

@@ -17,10 +17,11 @@ namespace Slutprojekt
             float AttackDMG { get; set; }
             void Attack();
         }
+        public int Cost { get; private set; }
 
-        public Tower(Rectangle drawBox, Texture2D texture) : base(drawBox, texture)
+        public Tower(Rectangle drawBox, Texture2D texture, int cost) : base(drawBox, texture)
         {
-
+            Cost = cost;
         }
 
         public void Update()

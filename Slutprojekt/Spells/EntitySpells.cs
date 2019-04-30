@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt.Spells
 {
-    static class EntitySpells
+    static class EntitySpells//Ta bort och lägg alla spells under Spell.cs kanske?
     {
         public static void Slow(float radius, Vector2 center)
         {
