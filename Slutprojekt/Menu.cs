@@ -89,11 +89,12 @@ namespace Slutprojekt
                 }
                 else if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["arrowLeft"].Contains(Game1.mouseState.Position))
                 {
-
+                    if (Page != 1)
+                        Page--;
                 }
                 else if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["arrowRight"].Contains(Game1.mouseState.Position))
                 {
-
+                    Page++;
                 }
             }
         }

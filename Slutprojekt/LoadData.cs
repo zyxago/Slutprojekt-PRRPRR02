@@ -117,8 +117,9 @@ namespace Slutprojekt
                     }
                     else if (typeof(T) == typeof(Enemy))
                     {
-                        float hp, speed;
-                        string resistance, enemySpell;
+                        float hp, speed, spellCooldown, spellRadius;
+                        string resistance;
+                        string enemySpell = null;
                         foreach (XmlNode xnode in docTemp)
                         {
                             if (xnode.Name == "NEnemy")
@@ -134,6 +135,7 @@ namespace Slutprojekt
                         }
                         texturePath = docTemp.SelectSingleNode($"{type}/Texture").InnerText;
                         texture = LoadTexture2D(Game1.graphics.GraphicsDevice, texturePath);
+                        drawBox = new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height);
                         float.TryParse(docTemp.SelectSingleNode($"/{type}/Speed").InnerText, out speed);
                         float.TryParse(docTemp.SelectSingleNode($"/{type}/Hp").InnerText, out hp);
                         if (docTemp.SelectSingleNode($"/{type}/Resistance").InnerText == "splash")
@@ -148,16 +150,26 @@ namespace Slutprojekt
                             continue;
                         if (type == "EEnemy")
                         {
-                            enemySpell = docTemp.SelectSingleNode($"/{type}/Ability").InnerText;
+                            float.TryParse(docTemp.SelectSingleNode($"/{type}/Ability/cooldown").InnerText, out spellCooldown);
+                            float.TryParse(docTemp.SelectSingleNode($"/{type}/Ability/radius").InnerText, out spellRadius);
+                            foreach (string Spellkey in Spell.Spells.Keys)
+                            {
+                                if (docTemp.SelectSingleNode($"{type}/Ability/type").InnerText == Spellkey)
+                                {
+                                    enemySpell = docTemp.SelectSingleNode($"{type}/Spell/type").InnerText;
+                                    break;
+                                }
+                            }
+                            if (enemySpell == null)
+                            {
+                                continue;
+                            }
+
                         }
-                    }
-                    if (type == "NEnemy")
-                    {
-                        objects.Add(new NormalType() as T);
-                    }
-                    else if (type == "EEnemy")
-                    {
-                        objects.Add(new ElitType() as T);
+                        if (type == "NEnemy")
+                            objects.Add(new NormalType(drawBox, texture) as T);
+                        else if (type == "EEnemy")
+                            objects.Add(new ElitType(drawBox, texture) as T);
                     }
                 }
                 catch

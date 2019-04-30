@@ -20,12 +20,17 @@ namespace Slutprojekt
         List<Map> mapList = new List<Map>();
         List<Tower> towerList = new List<Tower>();
         List<Enemy> enemyList = new List<Enemy>();
+        List<Tower> towers = new List<Tower>();
+        List<Enemy> enemies = new List<Enemy>();
         public static Texture2D ErrorTex;
         Texture2D hotbarTex;
         string[] towersToLoad;
         string[] enemiesToLoad;
         string[] mapsToLoad;
         public static int MapPlaying { get; private set; }
+        bool waveOngoing = false;
+        Rectangle nextWave = new Rectangle()//TODO bestäm plats på den
+
         public enum GameState
         {
             Menu,
@@ -103,7 +108,11 @@ namespace Slutprojekt
             }
             else if (State == GameState.InGame)
             {
-
+                if(mouseState.LeftButton != prevMouseState.LeftButton && )//TODO fixa rectangle
+                if(waveOngoing == true)
+                {
+                    EntitySpawner.SpawnEnemies();
+                }
             }
             else if (State == GameState.Quit)
             {

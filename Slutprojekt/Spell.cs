@@ -13,7 +13,9 @@ namespace Slutprojekt
         public static Dictionary<string, Action<float, Vector2>> Spells = new Dictionary<string, Action<float, Vector2>>();
         public static void LoadSpells()
         {
-            Spells.Add("slow", TowerSpells.Slow);
+            Spells.Add("Tslow", TowerSpells.Slow);
+
+            Spells.Add("Eslow", EntitySpells.Slow);
         }
     }
 }
