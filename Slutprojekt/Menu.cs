@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Slutprojekt.API;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace Slutprojekt
         public static Contents contents { get; set; }
 
         private static int Page { get; set; } = 1;
+        public static Texture2D ArrowLTex { get; set; }
+        public static Texture2D ArrowRTex { get; set; }
         public static Texture2D CurrentTexture { get; set; }
         private static Rectangle DrawBox = Game1.graphics.GraphicsDevice.Viewport.Bounds;
         private static Dictionary<Location, Texture2D> MenuTextures = new Dictionary<Location, Texture2D>();
@@ -38,25 +41,27 @@ namespace Slutprojekt
             MenuBoxes.Add("start", new Rectangle(225,125, 325, 60));
             MenuBoxes.Add("option", new Rectangle(225, 240, 325, 60));
             MenuBoxes.Add("exit", new Rectangle(225, 350, 325, 60));
-            MenuBoxes.Add("arrowLeft", new Rectangle());
-            MenuBoxes.Add("arrowRight", new Rectangle());
+            MenuBoxes.Add("arrowLeft", new Rectangle(190, 580, 50, 50));
+            MenuBoxes.Add("arrowRight", new Rectangle(570, 580, 50, 50));
             MenuTextures.Add(Location.MainMenu, LoadData.LoadTexture2D(Game1.graphics.GraphicsDevice, "MenuGraphics/MainMenu.png"));
             MenuTextures.Add(Location.MapSelector, LoadData.LoadTexture2D(Game1.graphics.GraphicsDevice, "MenuGraphics/MapSelection.png"));
+            ArrowLTex = LoadData.LoadTexture2D(Game1.graphics.GraphicsDevice, "MenuGraphics/arrowLeft.png");
+            ArrowRTex = LoadData.LoadTexture2D(Game1.graphics.GraphicsDevice, "MenuGraphics/arrowRight.png");
         }
 
         public static void Update()
         {
             if (location == Location.MainMenu)
             {
-                if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["start"].Contains(Game1.mouseState.Position))
+                if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["start"].Contains(Game1.mouseState.Position))
                 {
                     location = Location.MapSelector;
                 }
-                else if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["option"].Contains(Game1.mouseState.Position))
+                else if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["option"].Contains(Game1.mouseState.Position))
                 {
                     location = Location.Options;
                 }
-                else if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["exit"].Contains(Game1.mouseState.Position))
+                else if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["exit"].Contains(Game1.mouseState.Position))
                 {
                     Game1.State = Game1.GameState.Quit;
                 }
@@ -67,33 +72,36 @@ namespace Slutprojekt
             }
             else if (location == Location.MapSelector)
             {
-                if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["mapSlot1"].Contains(Game1.mouseState.Position))
+                if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["mapSlot1"].Contains(Game1.mouseState.Position))
                 {
                     location = Location.InGame;
                     Game1.StartGame(Page * 1);
                 }
-                else if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["mapSlot2"].Contains(Game1.mouseState.Position))
+                else if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["mapSlot2"].Contains(Game1.mouseState.Position))
                 {
                     location = Location.InGame;
                     Game1.StartGame(Page * 2);
                 }
-                else if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["mapSlot3"].Contains(Game1.mouseState.Position))
+                else if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["mapSlot3"].Contains(Game1.mouseState.Position))
                 {
                     location = Location.InGame;
                     Game1.StartGame(Page * 3);
                 }
-                else if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["mapSlot4"].Contains(Game1.mouseState.Position))
+                else if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["mapSlot4"].Contains(Game1.mouseState.Position))
                 {
                     location = Location.InGame;
                     Game1.StartGame(Page * 4);
                 }
-                else if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["arrowLeft"].Contains(Game1.mouseState.Position))
+                else if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["arrowLeft"].Contains(Game1.mouseState.Position))
                 {
-
+                    if(Page != 1)
+                    {
+                        Page--;
+                    }
                 }
-                else if (Game1.mouseState.LeftButton != Game1.prevMouseState.LeftButton && MenuBoxes["arrowRight"].Contains(Game1.mouseState.Position))
+                else if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["arrowRight"].Contains(Game1.mouseState.Position))
                 {
-
+                    Page++;
                 }
             }
         }
@@ -103,17 +111,20 @@ namespace Slutprojekt
             spriteBatch.Draw(MenuTextures[location], DrawBox, Color.White);
             if (location == Location.MapSelector)
             {
-                for (int i = 0; i < maps.Count; i++)
+                spriteBatch.Draw(ArrowLTex, MenuBoxes["arrowLeft"], Color.White);
+                spriteBatch.Draw(ArrowRTex, MenuBoxes["arrowRight"], Color.White);
+                for (int i = (Page - 1) * 4; i < (Page - 1) * 4 + 4 && i < maps.Count; i++)
                 {
-                    if (i+1 == 1 * Page)
+                    if (i % 4 == 0) 
                         spriteBatch.Draw(maps[i].Texture, MenuBoxes["mapSlot1"], Color.White);
-                    else if (i+1 == 2 * Page)
+                    else if (i % 4 == 1)
                         spriteBatch.Draw(maps[i].Texture, MenuBoxes["mapSlot2"], Color.White);
-                    else if (i+1 == 3 * Page)
+                    else if (i % 4 == 2)
                         spriteBatch.Draw(maps[i].Texture, MenuBoxes["mapSlot3"], Color.White);
-                    else if (i+1 == 4 * Page)
+                    else if (i % 4 == 3)
                         spriteBatch.Draw(maps[i].Texture, MenuBoxes["mapSlot4"], Color.White);
                 }
+                spriteBatch.DrawString(Game1.font, $"Page: {Page}", new Vector2(30, 20) ,Color.Black);
             }
         }
     }

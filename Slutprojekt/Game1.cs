@@ -23,7 +23,6 @@ namespace Slutprojekt
         List<Tower> towers = new List<Tower>();
         List<Enemy> enemies = new List<Enemy>();
         public static Texture2D ErrorTex;
-        Texture2D hotbarTex;
         string[] towersToLoad;
         string[] enemiesToLoad;
         string[] mapsToLoad;
@@ -82,13 +81,12 @@ namespace Slutprojekt
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("font");
             ErrorTex = Content.Load<Texture2D>("ErrorTexture");
-            hotbarTex = Content.Load<Texture2D>("TowerBar");
             Menu.Load();
             mapList = LoadData.Load(mapsToLoad);
             towerList = LoadData.Load<Tower>(towersToLoad);
             enemyList = LoadData.Load<Enemy>(enemiesToLoad);
-            Hud.hotbarTex = hotbarTex;
-            Hud.towerList = towerList;
+            Hud.Load();
+            Hud.TowerList = towerList;
         }
 
         /// <summary>
@@ -117,7 +115,7 @@ namespace Slutprojekt
             }
             else if (State == GameState.InGame)
             {
-                if(mouseState.LeftButton != prevMouseState.LeftButton && Hud.NextWave.Contains(mouseState.Position) && waveOngoing == false)
+                if(mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton != ButtonState.Pressed && Hud.NextWave.Contains(mouseState.Position) && waveOngoing == false)
                 {
                     waveOngoing = true;
                     spawning = true;
@@ -171,6 +169,7 @@ namespace Slutprojekt
                 mapList[MapPlaying].Draw(spriteBatch);
                 Hud.Draw(spriteBatch);
             }
+            spriteBatch.DrawString(Game1.font, $"{Game1.mouseState.Position}", new Vector2(50, 50), Color.Black);//Ta bort sen!
             spriteBatch.End();
             base.Draw(gameTime);
         }

@@ -234,7 +234,7 @@ namespace Slutprojekt
                     for (int x = 0; x < picture.Width; x++)
                     {
                         System.Drawing.Color tempColor = picture.GetPixel(x, y);
-                        rawData[y * picture.Width + x] = new Microsoft.Xna.Framework.Color(tempColor.R, tempColor.G, tempColor.B);
+                        rawData[y * picture.Width + x] = new Microsoft.Xna.Framework.Color(tempColor.R, tempColor.G, tempColor.B, tempColor.A);
                     }
                 }
                 Texture = new Texture2D(graphicsDevice, picture.Width, picture.Height);
