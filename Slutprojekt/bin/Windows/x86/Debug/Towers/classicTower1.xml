@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<CTower>
+	<Texture>Towers\Graphics\ClassicTower1.png</Texture>
+	<Attack>
+		<range>250</range>
+		<speed>1</speed>
+		<dmg>10</dmg>
+		<type>pierce</type>
+		<projectileTexture>Towers\Graphics\projectile\pierce.png</projectileTexture>
+	</Attack>
+</CTower>

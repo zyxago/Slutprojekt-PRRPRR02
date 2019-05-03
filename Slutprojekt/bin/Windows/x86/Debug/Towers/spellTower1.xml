@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<STower>
+	<Texture>Towers\Graphics\SpellTower1.png</Texture>
+	<Spell>
+		<type>Tslow</type>
+		<cooldown>10</cooldown>
+		<radius>100</radius>
+	</Spell>
+</STower>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<Map>
+	<Texture>Maps\Graphics\bild2.png</Texture>
+	<Path>
+		<point>
+			<X>108</X>
+			<Y>600</Y>
+		</point>
+		<point>
+			<X>108</X>
+			<Y>80</Y>
+		</point>
+		<point>
+			<X>680</X>
+			<Y>80</Y>
+		</point>
+		<point>
+			<X>340</X>
+			<Y>516</Y>
+		</point>
+	</Path>
+</Map>

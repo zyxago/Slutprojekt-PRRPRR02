@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<NEnemy>
+	<Texture>Enemies\Graphics\</Texture>
+	<Speed>5</Speed>
+	<Hp>10</Hp>
+	<Resistance>splash</Resistance>
+</Enemy>

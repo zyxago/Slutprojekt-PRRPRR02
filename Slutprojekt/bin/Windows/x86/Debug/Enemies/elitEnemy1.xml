@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<EEnemy>
+	<Texture>Enemies\Graphics\</Texture>
+	<Speed>5</Speed>
+	<Hp>10</Hp>
+	<Resistance>pierce</Resistance>
+	
+	<Ability>
+		<cooldown>10</cooldown>
+		<radius>100</radius>
+		<type>Eslow</type>
+	</Ability>
+</Enemy>
