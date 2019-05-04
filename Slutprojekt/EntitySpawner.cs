@@ -1,4 +1,5 @@
-﻿using Slutprojekt.GameObjects.Enemies;
+﻿using Microsoft.Xna.Framework;
+using Slutprojekt.GameObjects.Enemies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +18,12 @@ namespace Slutprojekt
         /// Generate next set of enemies and add them to EnemiesToSpawn queue
         /// </summary>
         /// <param name="enemyTypes">List of diffrent enemy types that can be added</param>
-        public static void NextWave(List<Enemy> enemyTypes)
+        public static void NextWave(List<Enemy> enemyTypes, Queue<Vector2> path)
         {
+            Queue<Vector2> Path = new Queue<Vector2>(path);
             wave++;
             spawnPoints = wave * 100 * (0.5 + rng.NextDouble());
-            Queue<Enemy> enemiesToSpawn = GenerateEnemies(spawnPoints, enemyTypes);
+            Queue<Enemy> enemiesToSpawn = GenerateEnemies(spawnPoints, enemyTypes, Path);
             EnemiesToSpawn = enemiesToSpawn;
         }
         /// <summary>
@@ -38,11 +40,12 @@ namespace Slutprojekt
         /// <param name="points">Points to spend on enemies, 10 points normalType - 100 points elitType</param>
         /// <param name="enemyTypes">List of diffrent enemy types that can be added</param>
         /// <returns></returns>
-        private static Queue<Enemy> GenerateEnemies(double points, List<Enemy> enemyTypes)
+        private static Queue<Enemy> GenerateEnemies(double points, List<Enemy> enemyTypes, Queue<Vector2> path)
         {
             List<ElitType> elitTypes = new List<ElitType>();
             List<NormalType> normalTypes = new List<NormalType>();
             Queue<Enemy> enemiesToSpawn = new Queue<Enemy>();
+            Vector2 spawnPos = path.Peek();
             foreach (Enemy enemy in enemyTypes)
             {
                 if(enemy is ElitType)
@@ -54,18 +57,20 @@ namespace Slutprojekt
                     normalTypes.Add(enemy as NormalType);
                 }
             }
-            while(points >= 10)
+            while (points >= 10)
             {
+                int n = rng.Next(0, normalTypes.Count - 1);
+                int e = rng.Next(0, elitTypes.Count - 1);
                 if (rng.Next(0, 5) != 0)
                 {
-                    enemiesToSpawn.Enqueue(normalTypes[rng.Next(0, normalTypes.Count - 1)]);
+                    enemiesToSpawn.Enqueue(new NormalType(new Rectangle((int)spawnPos.X - normalTypes[n].Texture.Width/2, (int)spawnPos.Y - normalTypes[n].Texture.Height/2, normalTypes[n].Texture.Width, normalTypes[n].Texture.Height), normalTypes[n].Texture, normalTypes[n].Radius, normalTypes[n].Speed, normalTypes[n].Hp, normalTypes[n].Resistance, new Queue<Vector2>(path)));
                     points -= 10;
                 }
                 else
                 {
                     if (points >= 100)
                     {
-                        enemiesToSpawn.Enqueue(elitTypes[rng.Next(0, elitTypes.Count - 1)]);
+                        enemiesToSpawn.Enqueue(new ElitType(new Rectangle((int)spawnPos.X - elitTypes[e].Texture.Width/2, (int)spawnPos.Y - elitTypes[e].Texture.Height/2, elitTypes[e].Texture.Width, elitTypes[e].Texture.Height), elitTypes[e].Texture, elitTypes[e].Radius, elitTypes[e].Speed, elitTypes[e].Hp, elitTypes[e].Resistance, elitTypes[e].Spell, elitTypes[e].SpellCooldown, elitTypes[e].SpellRadius, new Queue<Vector2>(path)));
                         points -= 100;
                     }
                 }

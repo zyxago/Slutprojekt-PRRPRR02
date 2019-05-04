@@ -10,9 +10,17 @@ namespace Slutprojekt
     {
         T[] queue;
         public int Count { get; private set; } = 0;
+
         public Queue()
         {
             queue = new T[16];
+        }
+
+        public Queue(Queue<T> TempQueue)
+        {
+            Count = TempQueue.Count;
+            queue = new T[TempQueue.queue.Length];
+            TempQueue.queue.CopyTo(queue, 0);
         }
         /// <summary>
         /// Add object to queue

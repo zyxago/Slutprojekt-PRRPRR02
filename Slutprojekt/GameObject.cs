@@ -8,15 +8,16 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt
 {
-    abstract class GameObject
+    abstract public class GameObject
     {
-        Rectangle Drawbox { get; set; }
+        public Rectangle Drawbox { get; set; }
         public Texture2D Texture { get; set; }
-        float Radius { get; set; }
-        public GameObject(Rectangle drawbox, Texture2D texture)
+        public float Radius { get; set; }
+        public GameObject(Rectangle drawbox, Texture2D texture, float radius)
         {
             Drawbox = drawbox;
             Texture = texture;
+            Radius = radius;
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)

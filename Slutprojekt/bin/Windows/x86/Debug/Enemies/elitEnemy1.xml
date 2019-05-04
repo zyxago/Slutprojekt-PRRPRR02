@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <EEnemy>
-	<Texture>Enemies\Graphics\</Texture>
+	<Texture>Enemies\Graphics\elitEnemy1.png</Texture>
 	<Speed>5</Speed>
 	<Hp>10</Hp>
+	<Radius>20</Radius>
 	<Resistance>pierce</Resistance>
 	
 	<Ability>
@@ -10,4 +11,4 @@
 		<radius>100</radius>
 		<type>Eslow</type>
 	</Ability>
-</Enemy>
+</EEnemy>

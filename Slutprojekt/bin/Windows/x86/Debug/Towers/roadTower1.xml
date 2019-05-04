@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <RTower>
 	<Texture>Towers\Graphics\RoadTower1.png</Texture>
+	<Cost>20</Cost>
+	<Radius>25</Radius>
 	<Attack>
 		<range>40</range>
 		<speed>3</speed>

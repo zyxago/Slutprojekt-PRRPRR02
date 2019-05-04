@@ -10,7 +10,7 @@ namespace Slutprojekt.GameObjects.Projectiles
 {
     class SplashProjectile : Projectile
     {
-        public SplashProjectile(Rectangle drawbox, Texture2D texture) : base(drawbox, texture)
+        public SplashProjectile(Rectangle drawbox, Texture2D texture, float radius) : base(drawbox, texture, radius)
         {
 
         }

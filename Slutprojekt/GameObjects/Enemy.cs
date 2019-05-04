@@ -13,16 +13,46 @@ namespace Slutprojekt
         List<Texture2D> ExploPixelList = new List<Texture2D>();
         List<Rectangle> ExploRectangles = new List<Rectangle>();
         List<Vector2> ExploDirectionList = new List<Vector2>();
-        int ExploMoveSpeed = 5;
+        public TimeSpan ExploTime = new TimeSpan();
+        public Queue<Vector2> Path { get; set; } = new Queue<Vector2>();
+        Vector2 Direction = new Vector2();
+        int ExploMoveSpeed = 3;
         int ExploSize;
+        public int Dmg { get; set; }
+        public float Speed { get; set; }
+        public float Hp { get; set; }
+        public string Resistance { get; set; }
+        public bool IsDead { get; set; }
 
-        public Enemy(Rectangle drawBox, Texture2D texture) : base(drawBox, texture)
+        public Enemy(Rectangle drawBox, Texture2D texture, float radius, float speed, float hp, string resistance, Queue<Vector2> path) : base(drawBox, texture, radius)
         {
-
+            Speed = speed;
+            Hp = hp;
+            Resistance = resistance;
+            Path = path;
         }
 
-        public void Update()
+        public void Move()//TODO fixa så att de rör sig mot nästa Vector2
         {
+            if (Vector2.Distance(Drawbox.Center.ToVector2(), Path.Peek()) < 10)
+            {
+                Path.Dequeue();
+            }
+            Direction = Path.Peek() - Drawbox.Center.ToVector2();
+            Direction.Normalize();
+            Drawbox = new Rectangle((int)(Drawbox.X + Direction.X * Speed), (int)(Drawbox.Y + Direction.Y * Speed), Drawbox.Width, Drawbox.Height);
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            if (Path.IsEmpty() && IsDead == false)
+            {
+                ExploTime = gameTime.TotalGameTime.Add(new TimeSpan(0, 0, 3));//ska bara göras när dom dör av skott
+                IsDead = true;
+                Explode(Game1.graphics.GraphicsDevice, Texture, Drawbox, 3);//ska bara göras när dom dör av skott
+                Hud.Hp -= Dmg;
+            }
+            Move();
             for (int i = 0; i < ExploRectangles.Count; i++)
             {
                 ExploRectangles[i] = new Rectangle((int)(ExploRectangles[i].X + -ExploDirectionList[i].X * ExploMoveSpeed), (int)(ExploRectangles[i].Y + -ExploDirectionList[i].Y * ExploMoveSpeed), ExploSize, ExploSize);
@@ -60,7 +90,10 @@ namespace Slutprojekt
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            base.Draw(spriteBatch);
+            if (!IsDead)
+            {
+                base.Draw(spriteBatch);
+            }
             for(int i = 0; i < ExploPixelList.Count; i++)
             {
                 spriteBatch.Draw(ExploPixelList[i], ExploRectangles[i], Color.White);

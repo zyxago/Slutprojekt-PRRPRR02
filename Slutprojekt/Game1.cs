@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Slutprojekt.GameObjects.Towers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,7 +21,7 @@ namespace Slutprojekt
         List<Map> mapList = new List<Map>();
         List<Tower> towerList = new List<Tower>();
         List<Enemy> enemyList = new List<Enemy>();
-        List<Tower> towers = new List<Tower>();
+        List<Tower> Towers = new List<Tower>();
         List<Enemy> enemies = new List<Enemy>();
         public static Texture2D ErrorTex;
         string[] towersToLoad;
@@ -85,8 +86,7 @@ namespace Slutprojekt
             mapList = LoadData.Load(mapsToLoad);
             towerList = LoadData.Load<Tower>(towersToLoad);
             enemyList = LoadData.Load<Enemy>(enemiesToLoad);
-            Hud.Load();
-            Hud.TowerList = towerList;
+            Hud.Load(towerList);
         }
 
         /// <summary>
@@ -96,6 +96,22 @@ namespace Slutprojekt
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="object1"></param>
+        /// <param name="object2"></param>
+        /// <returns></returns>
+        public bool CheckCollision(GameObject object1, GameObject object2)
+        {
+            float CollisonLength = object1.Radius + object2.Radius;
+            if(Vector2.Distance(object1.Drawbox.Center.ToVector2(), object2.Drawbox.Center.ToVector2()) <= CollisonLength)
+            {
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -115,22 +131,58 @@ namespace Slutprojekt
             }
             else if (State == GameState.InGame)
             {
-                if(mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton != ButtonState.Pressed && Hud.NextWave.Contains(mouseState.Position) && waveOngoing == false)
+                bool Collision = false;
+                if (Hud.TowerSelected != null)
+                {
+                    foreach(Tower PlacedTower in Towers)
+                    {
+                        if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton != ButtonState.Pressed && CheckCollision(PlacedTower, Hud.TowerSelected))
+                            Collision = true;
+                    }
+                    if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton != ButtonState.Pressed && Collision == false)
+                    {
+                        Hud.Money -= Hud.TowerSelected.Cost;
+                        if (Hud.TowerSelected is SpellTower)
+                        {
+                            Towers.Add(new SpellTower(new Rectangle(Hud.TowerSelected.Drawbox.X, Hud.TowerSelected.Drawbox.Y, Hud.TowerSelected.Drawbox.Width, Hud.TowerSelected.Drawbox.Height), Hud.TowerSelected.Texture, Hud.TowerSelected.Radius, Hud.TowerSelected.Cost, (Hud.TowerSelected as SpellTower).Spell, (Hud.TowerSelected as SpellTower).SpellCooldown, (Hud.TowerSelected as SpellTower).SpellRadius));
+                        }
+                        else if (Hud.TowerSelected is RoadTower)
+                        {
+                            Towers.Add(new RoadTower(new Rectangle(Hud.TowerSelected.Drawbox.X, Hud.TowerSelected.Drawbox.Y, Hud.TowerSelected.Drawbox.Width, Hud.TowerSelected.Drawbox.Height), Hud.TowerSelected.Texture, Hud.TowerSelected.Radius, Hud.TowerSelected.Cost, (Hud.TowerSelected as RoadTower).ProjectileTexture, (Hud.TowerSelected as RoadTower).AttackRange, (Hud.TowerSelected as RoadTower).AttackSpeed, (Hud.TowerSelected as RoadTower).AttackDMG, (Hud.TowerSelected as RoadTower).Ptype.ToString(), (Hud.TowerSelected as RoadTower).Hp));
+                        }
+                        else if (Hud.TowerSelected is ClassicTower)
+                        {
+                            Towers.Add(new ClassicTower(new Rectangle(Hud.TowerSelected.Drawbox.X, Hud.TowerSelected.Drawbox.Y, Hud.TowerSelected.Drawbox.Width, Hud.TowerSelected.Drawbox.Height), Hud.TowerSelected.Texture, Hud.TowerSelected.Radius, Hud.TowerSelected.Cost, (Hud.TowerSelected as ClassicTower).ProjectileTexture, (Hud.TowerSelected as ClassicTower).AttackRange, (Hud.TowerSelected as ClassicTower).AttackSpeed, (Hud.TowerSelected as ClassicTower).AttackDMG, (Hud.TowerSelected as ClassicTower).Ptype.ToString()));
+                        }
+                        Hud.TowerSelected = null;
+                    }
+                }
+                Hud.Update();
+                if(mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton != ButtonState.Pressed && Hud.NextWaveBox.Contains(mouseState.Position) && waveOngoing == false)
                 {
                     waveOngoing = true;
                     spawning = true;
-                    EntitySpawner.NextWave(enemyList);
+                    EntitySpawner.NextWave(enemyList, mapList[MapPlaying].PathQueue);
+                }
+                for(int i = 0; i < enemies.Count; i++)
+                {
+                    enemies[i].Update(gameTime);
+                    if (enemies[i].IsDead && enemies[i].ExploTime <= gameTime.TotalGameTime)
+                    {
+                        enemies.RemoveAt(i);
+                        i--;
+                    }
                 }
                 if (waveOngoing)
                 {
                     if (spawning == true)
                     {
                         if (!EntitySpawner.EnemiesToSpawn.IsEmpty())
-                            EntitySpawner.SpawnNextEnemy(enemyList);
+                            EntitySpawner.SpawnNextEnemy(enemies);
                         else
                             spawning = false;
                     }
-                    if (enemyList.Count == 0 && spawning == false)
+                    if (enemies.Count == 0 && spawning == false)
                     {
                         waveOngoing = false;
                     }
@@ -167,9 +219,17 @@ namespace Slutprojekt
             else if (State == GameState.InGame)
             {
                 mapList[MapPlaying].Draw(spriteBatch);
+                foreach(Tower tower in Towers)
+                {
+                    tower.Draw(spriteBatch);
+                }
+                foreach(Enemy enemy in enemies)
+                {
+                    enemy.Draw(spriteBatch);
+                }
                 Hud.Draw(spriteBatch);
             }
-            spriteBatch.DrawString(Game1.font, $"{Game1.mouseState.Position}", new Vector2(50, 50), Color.Black);//Ta bort sen!
+            spriteBatch.DrawString(font, $"{mouseState.Position}", new Vector2(50, 50), Color.Black);//Ta bort sen!
             spriteBatch.End();
             base.Draw(gameTime);
         }

@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <NEnemy>
-	<Texture>Enemies\Graphics\</Texture>
+	<Texture>Enemies\Graphics\standardEnemy1.png</Texture>
 	<Speed>5</Speed>
 	<Hp>10</Hp>
+	<Radius>20</Radius>
 	<Resistance>splash</Resistance>
-</Enemy>
+</NEnemy>

@@ -47,9 +47,8 @@ namespace Slutprojekt
                     {
                         Texture2D projectileTexture = null;
                         string projectiletexturePath = null;
-                        float aRange = 0, aSpeed = 0, aDmg = 0, roadHp = 0, spellCooldown = 0, spellRadius = 0;
-                        int towerHp = 0;
-                        int towerCost = 0;
+                        float radius, aRange = 0, aSpeed = 0, aDmg = 0, roadHp, spellCooldown = 0, spellRadius = 0;
+                        int towerHp = 0, towerCost;
                         string spellType = null, projectileType = null;
                         foreach (XmlNode xnode in docTemp)
                         {
@@ -72,7 +71,8 @@ namespace Slutprojekt
                         texturePath = docTemp.SelectSingleNode($"/{type}/Texture").InnerText;
                         texture = LoadTexture2D(Game1.graphics.GraphicsDevice, texturePath);
                         drawBox = new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height);
-                        int.TryParse(docTemp.SelectSingleNode($"/{type}/Cost").InnerText, out towerCost); //TODO lägg till tower cost i alla torns xml filer
+                        int.TryParse(docTemp.SelectSingleNode($"/{type}/Cost").InnerText, out towerCost);
+                        float.TryParse(docTemp.SelectSingleNode($"/{type}/Radius").InnerText, out radius);
                         if (type != "STower")
                         {
                             projectiletexturePath = docTemp.SelectSingleNode($"/{type}/Attack/projectileTexture").InnerText;
@@ -109,15 +109,15 @@ namespace Slutprojekt
                             }
                         }
                         if (type == "CTower")
-                            objects.Add(new ClassicTower(drawBox, texture, towerCost, projectileTexture, aRange, aSpeed, aDmg, projectileType) as T);
+                            objects.Add(new ClassicTower(drawBox, texture, radius, towerCost, projectileTexture, aRange, aSpeed, aDmg, projectileType) as T);
                         else if (type == "RTower")
-                            objects.Add(new RoadTower(drawBox, texture, towerCost, projectileTexture, aRange, aSpeed, aDmg, projectileType, towerHp) as T);
+                            objects.Add(new RoadTower(drawBox, texture, radius, towerCost, projectileTexture, aRange, aSpeed, aDmg, projectileType, towerHp) as T);
                         else if (type == "STower")
-                            objects.Add(new SpellTower(drawBox, texture, towerCost, spellType, spellCooldown, spellRadius) as T);
+                            objects.Add(new SpellTower(drawBox, texture, radius, towerCost, spellType, spellCooldown, spellRadius) as T);
                     }
                     else if (typeof(T) == typeof(Enemy))
                     {
-                        float hp, speed, spellCooldown, spellRadius;
+                        float hp, radius, speed, spellCooldown = 0, spellRadius = 0;
                         string resistance;
                         string enemySpell = null;
                         foreach (XmlNode xnode in docTemp)
@@ -138,6 +138,7 @@ namespace Slutprojekt
                         drawBox = new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height);
                         float.TryParse(docTemp.SelectSingleNode($"/{type}/Speed").InnerText, out speed);
                         float.TryParse(docTemp.SelectSingleNode($"/{type}/Hp").InnerText, out hp);
+                        float.TryParse(docTemp.SelectSingleNode($"/{type}/Radius").InnerText, out radius);
                         if (docTemp.SelectSingleNode($"/{type}/Resistance").InnerText == "splash")
                         {
                             resistance = docTemp.SelectSingleNode($"/{type}/Resistance").InnerText;
@@ -156,7 +157,7 @@ namespace Slutprojekt
                             {
                                 if (docTemp.SelectSingleNode($"{type}/Ability/type").InnerText == Spellkey)
                                 {
-                                    enemySpell = docTemp.SelectSingleNode($"{type}/Spell/type").InnerText;
+                                    enemySpell = docTemp.SelectSingleNode($"{type}/Ability/type").InnerText;
                                     break;
                                 }
                             }
@@ -167,9 +168,9 @@ namespace Slutprojekt
 
                         }
                         if (type == "NEnemy")
-                            objects.Add(new NormalType(drawBox, texture) as T);
+                            objects.Add(new NormalType(drawBox, texture, radius, speed, hp, resistance) as T);
                         else if (type == "EEnemy")
-                            objects.Add(new ElitType(drawBox, texture) as T);
+                            objects.Add(new ElitType(drawBox, texture, radius, speed, hp, resistance, enemySpell, spellCooldown, spellRadius) as T);
                     }
                     else
                     {

@@ -10,7 +10,7 @@ namespace Slutprojekt.GameObjects
 {
     abstract class Projectile : GameObject
     {
-        public Projectile(Rectangle drawbox, Texture2D texture) : base(drawbox, texture)
+        public Projectile(Rectangle drawbox, Texture2D texture, float radius) : base(drawbox, texture, radius)
         {
 
         }

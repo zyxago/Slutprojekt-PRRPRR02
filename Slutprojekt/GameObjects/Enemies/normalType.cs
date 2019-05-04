@@ -10,9 +10,9 @@ namespace Slutprojekt.GameObjects.Enemies
 {
     class NormalType : Enemy
     {
-        public NormalType(Rectangle drawBox, Texture2D texture) : base(drawBox, texture)
+        public NormalType(Rectangle drawBox, Texture2D texture, float radius, float speed, float hp, string resistance, Queue<Vector2> path = null) : base(drawBox, texture, radius, speed, hp, resistance, path)
         {
-
+            Dmg = 1;
         }
     }
 }

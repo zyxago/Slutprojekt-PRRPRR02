@@ -15,11 +15,12 @@ namespace Slutprojekt
             float AttackRange { get; set; }
             float AttackSpeed { get; set; }
             float AttackDMG { get; set; }
+            Texture2D ProjectileTexture { get; set; }
             void Attack();
         }
         public int Cost { get; private set; }
 
-        public Tower(Rectangle drawBox, Texture2D texture, int cost) : base(drawBox, texture)
+        public Tower(Rectangle drawBox, Texture2D texture, float radius, int cost) : base(drawBox, texture, radius)
         {
             Cost = cost;
         }

@@ -10,9 +10,15 @@ namespace Slutprojekt.GameObjects.Enemies
 {
     class ElitType : Enemy
     {
-        public ElitType(Rectangle drawBox, Texture2D texture) : base(drawBox, texture)
+        public string Spell { get; set; }
+        public float SpellCooldown { get; set; }
+        public float SpellRadius { get; set; }
+        public ElitType(Rectangle drawBox, Texture2D texture, float radius, float speed, float hp, string resistance, string enemySpell, float spellCooldown, float spellRadius, Queue<Vector2> path = null) : base(drawBox, texture, radius, speed, hp, resistance, path)
         {
-
+            Dmg = 10;
+            Spell = enemySpell;
+            SpellCooldown = spellCooldown;
+            SpellRadius = spellRadius;
         }
     }
 }

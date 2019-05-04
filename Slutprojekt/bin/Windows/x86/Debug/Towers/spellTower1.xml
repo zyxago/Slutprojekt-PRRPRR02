@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <STower>
 	<Texture>Towers\Graphics\SpellTower1.png</Texture>
+	<Cost>35</Cost>
+	<Radius>25</Radius>
 	<Spell>
 		<type>Tslow</type>
 		<cooldown>10</cooldown>

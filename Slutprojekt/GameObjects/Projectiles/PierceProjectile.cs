@@ -10,7 +10,7 @@ namespace Slutprojekt.GameObjects.Projectiles
 {
     class PierceProjectile : Projectile
     {
-        public PierceProjectile(Rectangle drawbox, Texture2D texture) : base(drawbox, texture)
+        public PierceProjectile(Rectangle drawbox, Texture2D texture, float radius) : base(drawbox, texture, radius)
         {
 
         }

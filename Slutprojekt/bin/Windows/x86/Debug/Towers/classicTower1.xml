@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <CTower>
 	<Texture>Towers\Graphics\ClassicTower1.png</Texture>
+	<Cost>20</Cost>
+	<Radius>25</Radius>
 	<Attack>
 		<range>250</range>
 		<speed>1</speed>

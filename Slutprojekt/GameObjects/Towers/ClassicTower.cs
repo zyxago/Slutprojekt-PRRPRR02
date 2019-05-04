@@ -14,13 +14,14 @@ namespace Slutprojekt.GameObjects.Towers
         public float AttackRange { get; set; }
         public float AttackSpeed { get; set; }
         public float AttackDMG { get; set; }
-        enum ProjectileType
+        public Texture2D ProjectileTexture { get; set; }
+        public enum ProjectileType
         {
             splash,
             pierce
         };
-        ProjectileType Ptype { get; set; }
-        public ClassicTower(Rectangle drawBox, Texture2D texture, int cost, Texture2D projectileTexture, float Arange, float Aspeed, float Admg, string projectileType) : base(drawBox, texture, cost)
+        public ProjectileType Ptype { get; set; }
+        public ClassicTower(Rectangle drawBox, Texture2D texture, float radius, int cost, Texture2D projectileTexture, float Arange, float Aspeed, float Admg, string projectileType) : base(drawBox, texture, radius, cost)
         {
             AttackRange = Arange;
             AttackSpeed = Aspeed;
