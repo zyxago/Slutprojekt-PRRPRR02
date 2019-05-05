@@ -47,8 +47,8 @@ namespace Slutprojekt
                     {
                         Texture2D projectileTexture = null;
                         string projectiletexturePath = null;
-                        float radius, aRange = 0, aSpeed = 0, aDmg = 0, roadHp, spellCooldown = 0, spellRadius = 0;
-                        int towerHp = 0, towerCost;
+                        int radius = 0, aRange = 0, aDmg = 0, roadHp = 1, spellCooldown = 0, spellRadius = 0, towerHp = 0, towerCost = 1, projectileEffectInt = 0;
+                        float aSpeed = 0;
                         string spellType = null, projectileType = null;
                         foreach (XmlNode xnode in docTemp)
                         {
@@ -72,14 +72,15 @@ namespace Slutprojekt
                         texture = LoadTexture2D(Game1.graphics.GraphicsDevice, texturePath);
                         drawBox = new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height);
                         int.TryParse(docTemp.SelectSingleNode($"/{type}/Cost").InnerText, out towerCost);
-                        float.TryParse(docTemp.SelectSingleNode($"/{type}/Radius").InnerText, out radius);
+                        int.TryParse(docTemp.SelectSingleNode($"/{type}/Radius").InnerText, out radius);
                         if (type != "STower")
                         {
                             projectiletexturePath = docTemp.SelectSingleNode($"/{type}/Attack/projectileTexture").InnerText;
                             projectileTexture = LoadTexture2D(Game1.graphics.GraphicsDevice, projectiletexturePath);
-                            float.TryParse(docTemp.SelectSingleNode($"/{type}/Attack/range").InnerText, out aRange);
+                            int.TryParse(docTemp.SelectSingleNode($"/{type}/Attack/range").InnerText, out aRange);
                             float.TryParse(docTemp.SelectSingleNode($"/{type}/Attack/speed").InnerText, out aSpeed);
-                            float.TryParse(docTemp.SelectSingleNode($"/{type}/Attack/dmg").InnerText, out aDmg);
+                            int.TryParse(docTemp.SelectSingleNode($"/{type}/Attack/dmg").InnerText, out aDmg);
+                            int.TryParse(docTemp.SelectSingleNode($"/{type}/Attack/typeModifier").InnerText, out projectileEffectInt);
                             if (docTemp.SelectSingleNode($"/{type}/Attack/type").InnerText == "pierce")
                                 projectileType = docTemp.SelectSingleNode($"/{type}/Attack/type").InnerText;
                             else if (docTemp.SelectSingleNode($"/{type}/Attack/type").InnerText == "splash")
@@ -88,13 +89,13 @@ namespace Slutprojekt
                                 continue;
                             if (type == "RTower")
                             {
-                                float.TryParse(docTemp.SelectSingleNode($"/{type}/Hp").InnerText, out roadHp);
+                                int.TryParse(docTemp.SelectSingleNode($"/{type}/Hp").InnerText, out roadHp);
                             }
                         }
                         else if (type == "STower")
                         {
-                            float.TryParse(docTemp.SelectSingleNode($"/{type}/Spell/cooldown").InnerText, out spellCooldown);
-                            float.TryParse(docTemp.SelectSingleNode($"/{type}/Spell/radius").InnerText, out spellRadius);
+                            int.TryParse(docTemp.SelectSingleNode($"/{type}/Spell/cooldown").InnerText, out spellCooldown);
+                            int.TryParse(docTemp.SelectSingleNode($"/{type}/Spell/radius").InnerText, out spellRadius);
                             foreach (string Spellkey in Spell.Spells.Keys)
                             {
                                 if (docTemp.SelectSingleNode($"{type}/Spell/type").InnerText == Spellkey)
@@ -109,15 +110,15 @@ namespace Slutprojekt
                             }
                         }
                         if (type == "CTower")
-                            objects.Add(new ClassicTower(drawBox, texture, radius, towerCost, projectileTexture, aRange, aSpeed, aDmg, projectileType) as T);
+                            objects.Add(new ClassicTower(drawBox, texture, radius, towerCost, projectileTexture, aRange, aSpeed, aDmg, projectileType, projectileEffectInt) as T);
                         else if (type == "RTower")
-                            objects.Add(new RoadTower(drawBox, texture, radius, towerCost, projectileTexture, aRange, aSpeed, aDmg, projectileType, towerHp) as T);
+                            objects.Add(new RoadTower(drawBox, texture, radius, towerCost, projectileTexture, aRange, aSpeed, aDmg, projectileType, projectileEffectInt, towerHp) as T);
                         else if (type == "STower")
                             objects.Add(new SpellTower(drawBox, texture, radius, towerCost, spellType, spellCooldown, spellRadius) as T);
                     }
                     else if (typeof(T) == typeof(Enemy))
                     {
-                        float hp, radius, speed, spellCooldown = 0, spellRadius = 0;
+                        int hp, radius, speed, spellCooldown = 0, spellRadius = 0;
                         string resistance;
                         string enemySpell = null;
                         foreach (XmlNode xnode in docTemp)
@@ -136,9 +137,9 @@ namespace Slutprojekt
                         texturePath = docTemp.SelectSingleNode($"{type}/Texture").InnerText;
                         texture = LoadTexture2D(Game1.graphics.GraphicsDevice, texturePath);
                         drawBox = new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height);
-                        float.TryParse(docTemp.SelectSingleNode($"/{type}/Speed").InnerText, out speed);
-                        float.TryParse(docTemp.SelectSingleNode($"/{type}/Hp").InnerText, out hp);
-                        float.TryParse(docTemp.SelectSingleNode($"/{type}/Radius").InnerText, out radius);
+                        int.TryParse(docTemp.SelectSingleNode($"/{type}/Speed").InnerText, out speed);
+                        int.TryParse(docTemp.SelectSingleNode($"/{type}/Hp").InnerText, out hp);
+                        int.TryParse(docTemp.SelectSingleNode($"/{type}/Radius").InnerText, out radius);
                         if (docTemp.SelectSingleNode($"/{type}/Resistance").InnerText == "splash")
                         {
                             resistance = docTemp.SelectSingleNode($"/{type}/Resistance").InnerText;
@@ -151,8 +152,8 @@ namespace Slutprojekt
                             continue;
                         if (type == "EEnemy")
                         {
-                            float.TryParse(docTemp.SelectSingleNode($"/{type}/Ability/cooldown").InnerText, out spellCooldown);
-                            float.TryParse(docTemp.SelectSingleNode($"/{type}/Ability/radius").InnerText, out spellRadius);
+                            int.TryParse(docTemp.SelectSingleNode($"/{type}/Ability/cooldown").InnerText, out spellCooldown);
+                            int.TryParse(docTemp.SelectSingleNode($"/{type}/Ability/radius").InnerText, out spellRadius);
                             foreach (string Spellkey in Spell.Spells.Keys)
                             {
                                 if (docTemp.SelectSingleNode($"{type}/Ability/type").InnerText == Spellkey)

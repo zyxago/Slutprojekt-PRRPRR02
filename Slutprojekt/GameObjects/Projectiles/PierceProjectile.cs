@@ -10,9 +10,17 @@ namespace Slutprojekt.GameObjects.Projectiles
 {
     class PierceProjectile : Projectile
     {
-        public PierceProjectile(Rectangle drawbox, Texture2D texture, float radius) : base(drawbox, texture, radius)
+        int PierceCount { get; set; }
+        public PierceProjectile(Rectangle drawbox, Texture2D texture, int radius, Vector2 direction, int pierceCount) : base(drawbox, texture, radius, direction)
         {
+            PierceCount = pierceCount;
+        }
 
+        public override void Effect(List<Enemy> enemies, int dmg)
+        {
+            PierceCount--;
+            if(PierceCount == 0)
+                IsDead = true;
         }
     }
 }

@@ -2,7 +2,7 @@
 <NEnemy>
 	<Texture>Enemies\Graphics\standardEnemy1.png</Texture>
 	<Speed>5</Speed>
-	<Hp>10</Hp>
+	<Hp>20</Hp>
 	<Radius>20</Radius>
 	<Resistance>splash</Resistance>
 </NEnemy>

@@ -10,21 +10,22 @@ namespace Slutprojekt
 {
     abstract class Enemy : GameObject
     {
-        List<Texture2D> ExploPixelList = new List<Texture2D>();
-        List<Rectangle> ExploRectangles = new List<Rectangle>();
-        List<Vector2> ExploDirectionList = new List<Vector2>();
-        public TimeSpan ExploTime = new TimeSpan();
+        private List<Texture2D> ExploPixelList { get; set; } = new List<Texture2D>();
+        private List<Rectangle> ExploRectangles { get; set; } = new List<Rectangle>();
+        private  List<Vector2> ExploDirectionList { get; set; } = new List<Vector2>();
+        private int ExploMoveSpeed { get; set; } = 3;
+        private int ExploSize { get; set; }
+        public TimeSpan ExploTime { get; set; } = new TimeSpan();
+
         public Queue<Vector2> Path { get; set; } = new Queue<Vector2>();
         Vector2 Direction = new Vector2();
-        int ExploMoveSpeed = 3;
-        int ExploSize;
         public int Dmg { get; set; }
-        public float Speed { get; set; }
-        public float Hp { get; set; }
+        public int Speed { get; set; }
+        public int Hp { get; set; }
         public string Resistance { get; set; }
         public bool IsDead { get; set; }
 
-        public Enemy(Rectangle drawBox, Texture2D texture, float radius, float speed, float hp, string resistance, Queue<Vector2> path) : base(drawBox, texture, radius)
+        public Enemy(Rectangle drawBox, Texture2D texture, int radius, int speed, int hp, string resistance, Queue<Vector2> path) : base(drawBox, texture, radius)
         {
             Speed = speed;
             Hp = hp;
@@ -32,34 +33,38 @@ namespace Slutprojekt
             Path = path;
         }
 
-        public void Move()//TODO fixa så att de rör sig mot nästa Vector2
+        private void Move()
         {
             if (Vector2.Distance(Drawbox.Center.ToVector2(), Path.Peek()) < 10)
-            {
                 Path.Dequeue();
-            }
             Direction = Path.Peek() - Drawbox.Center.ToVector2();
             Direction.Normalize();
             Drawbox = new Rectangle((int)(Drawbox.X + Direction.X * Speed), (int)(Drawbox.Y + Direction.Y * Speed), Drawbox.Width, Drawbox.Height);
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
-            if (Path.IsEmpty() && IsDead == false)
+            base.Update();
+            if (Path.IsEmpty() && !IsDead)
             {
-                ExploTime = gameTime.TotalGameTime.Add(new TimeSpan(0, 0, 3));//ska bara göras när dom dör av skott
                 IsDead = true;
-                Explode(Game1.graphics.GraphicsDevice, Texture, Drawbox, 3);//ska bara göras när dom dör av skott
                 Hud.Hp -= Dmg;
+            }
+            if(Hp <= 0 && !IsDead)
+            {
+                IsDead = true;
+                ExploTime = gameTime.TotalGameTime.Add(new TimeSpan(0, 0, 1));
+                Explode(Game1.graphics.GraphicsDevice, Texture, Drawbox, 3);
             }
             Move();
             for (int i = 0; i < ExploRectangles.Count; i++)
             {
+                ExploMoveSpeed = Game1.rng.Next(1, 6);
                 ExploRectangles[i] = new Rectangle((int)(ExploRectangles[i].X + -ExploDirectionList[i].X * ExploMoveSpeed), (int)(ExploRectangles[i].Y + -ExploDirectionList[i].Y * ExploMoveSpeed), ExploSize, ExploSize);
             }
         }
         //När den dör så exploderar den i så atta lla dens pixlar flyger iväg. Kanske döpa om...
-        public void Explode(GraphicsDevice graphicsDevice, Texture2D texture, Rectangle originBox, int scale = 1)
+        private void Explode(GraphicsDevice graphicsDevice, Texture2D texture, Rectangle originBox, int scale = 1)
         {
             Color[] rawData;
             Rectangle OriginBox;
@@ -91,10 +96,8 @@ namespace Slutprojekt
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (!IsDead)
-            {
                 base.Draw(spriteBatch);
-            }
-            for(int i = 0; i < ExploPixelList.Count; i++)
+            for (int i = 0; i < ExploPixelList.Count; i++)
             {
                 spriteBatch.Draw(ExploPixelList[i], ExploRectangles[i], Color.White);
             }

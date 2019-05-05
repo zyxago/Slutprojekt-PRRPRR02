@@ -4,10 +4,11 @@
 	<Cost>20</Cost>
 	<Radius>25</Radius>
 	<Attack>
-		<range>40</range>
+		<range>50</range>
 		<speed>3</speed>
 		<dmg>40</dmg>
 		<type>splash</type>
+		<typeModifier>100</typeModifier>
 		<projectileTexture>Towers\Graphics\projectile\splash.png</projectileTexture>
 	</Attack>
 	

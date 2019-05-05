@@ -2,7 +2,7 @@
 <EEnemy>
 	<Texture>Enemies\Graphics\elitEnemy1.png</Texture>
 	<Speed>5</Speed>
-	<Hp>10</Hp>
+	<Hp>100</Hp>
 	<Radius>20</Radius>
 	<Resistance>pierce</Resistance>
 	

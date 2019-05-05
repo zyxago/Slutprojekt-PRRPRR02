@@ -34,9 +34,12 @@ namespace Slutprojekt
 
         public static void Update()
         {
-            if(TowerSelected != null)
+            if (TowerSelected != null)
+            {
                 TowerSelected.Drawbox = new Rectangle(Game1.mouseState.Position.X - TowerSelected.Drawbox.Width / 2, Game1.mouseState.Position.Y - TowerSelected.Drawbox.Height / 2, TowerSelected.Drawbox.Width, TowerSelected.Drawbox.Height);
-            foreach(Tower tower in TowerTypes.Keys)
+                TowerSelected.Update();
+            }
+            foreach (Tower tower in TowerTypes.Keys)
             {
                 Rectangle hotbarBox;
                 TowerTypes.TryGetValue(tower, out hotbarBox);
@@ -63,7 +66,7 @@ namespace Slutprojekt
                     spriteBatch.Draw(tower.Texture, drawBox, Color.White);
             }
             if (TowerSelected != null)
-                spriteBatch.Draw(TowerSelected.Texture, TowerSelected.Drawbox, Color.White);
+                TowerSelected.Draw(spriteBatch);
         }
     }
 }

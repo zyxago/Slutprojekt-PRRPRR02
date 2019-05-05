@@ -10,9 +10,21 @@ namespace Slutprojekt.GameObjects.Projectiles
 {
     class SplashProjectile : Projectile
     {
-        public SplashProjectile(Rectangle drawbox, Texture2D texture, float radius) : base(drawbox, texture, radius)
+        int SplashRange { get; set; }
+        public SplashProjectile(Rectangle drawbox, Texture2D texture, int radius, Vector2 direction, int splashRange) : base(drawbox, texture, radius, direction)
         {
+            SplashRange = splashRange;
+        }
 
+        public override void Effect(List<Enemy> enemies, int dmg)
+        {
+            foreach(Enemy enemy in enemies)
+            {
+                if(Game1.CheckIfInRange(enemy.Center, enemy.Radius, Center, SplashRange))
+                {
+                    enemy.Hp -= dmg;
+                }
+            }
         }
     }
 }

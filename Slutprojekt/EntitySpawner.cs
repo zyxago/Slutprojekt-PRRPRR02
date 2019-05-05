@@ -12,7 +12,6 @@ namespace Slutprojekt
     {
         public static int wave = 0;
         private static double spawnPoints;
-        private static Random rng = new Random();
         public static Queue<Enemy> EnemiesToSpawn { get; private set; }
         /// <summary>
         /// Generate next set of enemies and add them to EnemiesToSpawn queue
@@ -22,7 +21,7 @@ namespace Slutprojekt
         {
             Queue<Vector2> Path = new Queue<Vector2>(path);
             wave++;
-            spawnPoints = wave * 100 * (0.5 + rng.NextDouble());
+            spawnPoints = wave * 100 * (0.5 + Game1.rng.NextDouble());
             Queue<Enemy> enemiesToSpawn = GenerateEnemies(spawnPoints, enemyTypes, Path);
             EnemiesToSpawn = enemiesToSpawn;
         }
@@ -59,9 +58,9 @@ namespace Slutprojekt
             }
             while (points >= 10)
             {
-                int n = rng.Next(0, normalTypes.Count - 1);
-                int e = rng.Next(0, elitTypes.Count - 1);
-                if (rng.Next(0, 5) != 0)
+                int n = Game1.rng.Next(0, normalTypes.Count - 1);
+                int e = Game1.rng.Next(0, elitTypes.Count - 1);
+                if (Game1.rng.Next(0, 5) != 0)
                 {
                     enemiesToSpawn.Enqueue(new NormalType(new Rectangle((int)spawnPos.X - normalTypes[n].Texture.Width/2, (int)spawnPos.Y - normalTypes[n].Texture.Height/2, normalTypes[n].Texture.Width, normalTypes[n].Texture.Height), normalTypes[n].Texture, normalTypes[n].Radius, normalTypes[n].Speed, normalTypes[n].Hp, normalTypes[n].Resistance, new Queue<Vector2>(path)));
                     points -= 10;

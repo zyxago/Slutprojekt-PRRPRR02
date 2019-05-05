@@ -8,6 +8,7 @@
 		<speed>1</speed>
 		<dmg>10</dmg>
 		<type>pierce</type>
+		<typeModifier>2</typeModifier>
 		<projectileTexture>Towers\Graphics\projectile\pierce.png</projectileTexture>
 	</Attack>
 </CTower>
