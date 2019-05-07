@@ -96,7 +96,7 @@ namespace Slutprojekt
                         {
                             int.TryParse(docTemp.SelectSingleNode($"/{type}/Spell/cooldown").InnerText, out spellCooldown);
                             int.TryParse(docTemp.SelectSingleNode($"/{type}/Spell/radius").InnerText, out spellRadius);
-                            foreach (string Spellkey in Spell.Spells.Keys)
+                            foreach (string Spellkey in Spell.Tspells.Keys)
                             {
                                 if (docTemp.SelectSingleNode($"{type}/Spell/type").InnerText == Spellkey)
                                 {
@@ -154,7 +154,7 @@ namespace Slutprojekt
                         {
                             int.TryParse(docTemp.SelectSingleNode($"/{type}/Ability/cooldown").InnerText, out spellCooldown);
                             int.TryParse(docTemp.SelectSingleNode($"/{type}/Ability/radius").InnerText, out spellRadius);
-                            foreach (string Spellkey in Spell.Spells.Keys)
+                            foreach (string Spellkey in Spell.Espells.Keys)
                             {
                                 if (docTemp.SelectSingleNode($"{type}/Ability/type").InnerText == Spellkey)
                                 {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt
 {
-    abstract class Enemy : GameObject
+    public abstract class Enemy : GameObject
     {
         private List<Texture2D> ExploPixelList { get; set; } = new List<Texture2D>();
         private List<Rectangle> ExploRectangles { get; set; } = new List<Rectangle>();
@@ -24,6 +24,7 @@ namespace Slutprojekt
         public int Hp { get; set; }
         public string Resistance { get; set; }
         public bool IsDead { get; set; }
+        public int Worth { get; set; } = 0;
 
         public Enemy(Rectangle drawBox, Texture2D texture, int radius, int speed, int hp, string resistance, Queue<Vector2> path) : base(drawBox, texture, radius)
         {
@@ -53,6 +54,7 @@ namespace Slutprojekt
             if(Hp <= 0 && !IsDead)
             {
                 IsDead = true;
+                Hud.Money += Worth;
                 ExploTime = gameTime.TotalGameTime.Add(new TimeSpan(0, 0, 1));
                 Explode(Game1.graphics.GraphicsDevice, Texture, Drawbox, 3);
             }
@@ -63,6 +65,7 @@ namespace Slutprojekt
                 ExploRectangles[i] = new Rectangle((int)(ExploRectangles[i].X + -ExploDirectionList[i].X * ExploMoveSpeed), (int)(ExploRectangles[i].Y + -ExploDirectionList[i].Y * ExploMoveSpeed), ExploSize, ExploSize);
             }
         }
+
         //När den dör så exploderar den i så atta lla dens pixlar flyger iväg. Kanske döpa om...
         private void Explode(GraphicsDevice graphicsDevice, Texture2D texture, Rectangle originBox, int scale = 1)
         {

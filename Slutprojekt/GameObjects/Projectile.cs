@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt.GameObjects
 {
-    abstract class Projectile : GameObject
+    public abstract class Projectile : GameObject
     {
         private Vector2 Direction;
         private int Speed = 5;
@@ -18,12 +18,12 @@ namespace Slutprojekt.GameObjects
             Direction = direction;
         }
 
-        public virtual void Update()//TODO Eventuellt ändra på update
+        public override void Update()
         {
             base.Update();
             Drawbox = new Rectangle((int)(Drawbox.X + Direction.X * Speed), (int)(Drawbox.Y + Direction.Y * Speed), Drawbox.Width, Drawbox.Height);
         }
 
-        abstract public void Effect(List<Enemy> enemies, int dmg);
+        abstract public void Effect(List<Enemy> enemies, int dmg, int index);
     }
 }

@@ -69,7 +69,7 @@ namespace Slutprojekt
                 {
                     if (points >= 100)
                     {
-                        enemiesToSpawn.Enqueue(new ElitType(new Rectangle((int)spawnPos.X - elitTypes[e].Texture.Width/2, (int)spawnPos.Y - elitTypes[e].Texture.Height/2, elitTypes[e].Texture.Width, elitTypes[e].Texture.Height), elitTypes[e].Texture, elitTypes[e].Radius, elitTypes[e].Speed, elitTypes[e].Hp, elitTypes[e].Resistance, elitTypes[e].Spell, elitTypes[e].SpellCooldown, elitTypes[e].SpellRadius, new Queue<Vector2>(path)));
+                        enemiesToSpawn.Enqueue(new ElitType(new Rectangle((int)spawnPos.X - elitTypes[e].Texture.Width/2, (int)spawnPos.Y - elitTypes[e].Texture.Height/2, elitTypes[e].Texture.Width, elitTypes[e].Texture.Height), elitTypes[e].Texture, elitTypes[e].Radius, elitTypes[e].Speed, elitTypes[e].Hp, elitTypes[e].Resistance, elitTypes[e].SpellKey, elitTypes[e].SpellCooldown, elitTypes[e].SpellRadius, new Queue<Vector2>(path)));
                         points -= 100;
                     }
                 }

@@ -9,23 +9,35 @@ using static Slutprojekt.GameObject;
 
 namespace Slutprojekt.GameObjects.Enemies
 {
-    class ElitType : Enemy, ISpell
+    sealed class ElitType : Enemy, ISpell
     {
-        public string Spell { get; set; }
-        public float SpellCooldown { get; set; }
-        public float SpellRadius { get; set; }
+        public string SpellKey { get; set; }
+        public int SpellCooldown { get; set; }
+        public int SpellRadius { get; set; }
+        public TimeSpan Cooldown { get; set; }
 
-        public ElitType(Rectangle drawBox, Texture2D texture, float radius, float speed, float hp, string resistance, string enemySpell, float spellCooldown, float spellRadius, Queue<Vector2> path = null) : base(drawBox, texture, radius, speed, hp, resistance, path)
+        public ElitType(Rectangle drawBox, Texture2D texture, int radius, int speed, int hp, string resistance, string enemySpell, int spellCooldown, int spellRadius, Queue<Vector2> path = null) : base(drawBox, texture, radius, speed, hp, resistance, path)
         {
+            Worth = 50;
             Dmg = 10;
-            Spell = enemySpell;
+            SpellKey = enemySpell;
             SpellCooldown = spellCooldown;
             SpellRadius = spellRadius;
         }
 
-        public void ActivateSpell()
+        public void Update(List<Tower> towers, GameTime gameTime)
         {
+            base.Update(gameTime);
+            if (Cooldown <= gameTime.TotalGameTime)
+            {
+                Cooldown = gameTime.TotalGameTime.Add(new TimeSpan(0, 0, SpellCooldown));
+                ActivateSpell(null ,towers);
+            }
+        }
 
+        public void ActivateSpell(List<Enemy> enemies = null,List<Tower> towers = null)
+        {
+            
         }
     }
 }

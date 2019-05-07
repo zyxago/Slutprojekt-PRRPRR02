@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt
 {
-    abstract class Tower : GameObject
+    public abstract class Tower : GameObject
     {
         public interface IAttack
         {
@@ -24,6 +24,7 @@ namespace Slutprojekt
             int ProjectileEffect { get; set; }
             void Attack(Enemy target);
         }
+        protected List<Enemy> Targets { get; set; }
         public int Cost { get; private set; }
 
         public Tower(Rectangle drawBox, Texture2D texture, int radius, int cost) : base(drawBox, texture, radius)

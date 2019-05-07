@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt
 {
-    class Queue<T>
+    public class Queue<T>
     {
         T[] queue;
         public int Count { get; private set; } = 0;

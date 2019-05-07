@@ -8,17 +8,23 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt.GameObjects.Projectiles
 {
-    class PierceProjectile : Projectile
+    sealed class PierceProjectile : Projectile
     {
-        int PierceCount { get; set; }
+        private int PierceCount { get; set; }
+        private int LastHitIndex { get; set; } = 999;
         public PierceProjectile(Rectangle drawbox, Texture2D texture, int radius, Vector2 direction, int pierceCount) : base(drawbox, texture, radius, direction)
         {
             PierceCount = pierceCount;
         }
 
-        public override void Effect(List<Enemy> enemies, int dmg)
+        public override void Effect(List<Enemy> enemies, int dmg, int index)
         {
-            PierceCount--;
+            if(index != LastHitIndex)
+            {
+                enemies[index].Hp -= dmg;
+                PierceCount--;
+                LastHitIndex = index;
+            }
             if(PierceCount == 0)
                 IsDead = true;
         }

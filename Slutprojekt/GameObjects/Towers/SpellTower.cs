@@ -9,22 +9,33 @@ using static Slutprojekt.GameObject;
 
 namespace Slutprojekt.GameObjects.Towers
 {
-    class SpellTower : Tower, ISpell
+    sealed class SpellTower : Tower, ISpell
     {
-        public string Spell { get; set; }
-        public float SpellCooldown { get;set; }
-        public float SpellRadius { get; set; }
+        public string SpellKey { get; set; }
+        public int SpellCooldown { get;set; }
+        public int SpellRadius { get; set; }
+        public TimeSpan Cooldown { get; set; } = new TimeSpan(0);
 
-        public SpellTower(Rectangle drawBox, Texture2D texture, float radius, int cost, string spell, float spellCooldown, float spellRadius) :base(drawBox, texture, radius, cost)
+        public SpellTower(Rectangle drawBox, Texture2D texture, int radius, int cost, string spell, int spellCooldown, int spellRadius) :base(drawBox, texture, radius, cost)
         {
-            Spell = spell;
+            SpellKey = spell;
             SpellCooldown = spellCooldown;
             SpellRadius = spellRadius;
         }
 
-        public void ActivateSpell()
+        public override void Update(List<Enemy> enemies, GameTime gameTime)
         {
+            base.Update();
+            if(Cooldown <= gameTime.TotalGameTime)
+            {
+                Cooldown = gameTime.TotalGameTime.Add(new TimeSpan(0, 0, SpellCooldown));
+                ActivateSpell(enemies);
+            }
+        }
 
+        public void ActivateSpell(List<Enemy> enemies, List<Tower> towers = null)
+        {
+            Spell.CastSpell(SpellKey, SpellRadius, Center, enemies);
         }
     }
 }

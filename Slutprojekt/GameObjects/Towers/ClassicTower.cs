@@ -59,12 +59,11 @@ namespace Slutprojekt.GameObjects.Towers
             for(int i = 0; i < Projectiles.Count; i++)
             {
                 Projectiles[i].Update();
-                foreach(Enemy enemy in enemies)
+                for(int j = 0; j < enemies.Count; j++)
                 {
-                    if (Game1.CheckIfInRange(enemy.Center, enemy.Radius, Projectiles[i].Center, Projectiles[i].Radius))
+                    if (Game1.CheckIfInRange(enemies[j].Center, enemies[j].Radius, Projectiles[i].Center, Projectiles[i].Radius))
                     {
-                        enemy.Hp -= AttackDMG;
-                        Projectiles[i].Effect(enemies, (int)AttackDMG);//TODO kolla så att det funkar eventuellt fixa nått nytt sätt
+                        Projectiles[i].Effect(enemies, AttackDMG, j);//TODO kolla så att det funkar eventuellt fixa nått nytt sätt
                         break;
                     }
                 }

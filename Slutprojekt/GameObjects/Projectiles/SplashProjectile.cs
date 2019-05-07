@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt.GameObjects.Projectiles
 {
-    class SplashProjectile : Projectile
+    sealed class SplashProjectile : Projectile
     {
         int SplashRange { get; set; }
         public SplashProjectile(Rectangle drawbox, Texture2D texture, int radius, Vector2 direction, int splashRange) : base(drawbox, texture, radius, direction)
@@ -16,8 +16,9 @@ namespace Slutprojekt.GameObjects.Projectiles
             SplashRange = splashRange;
         }
 
-        public override void Effect(List<Enemy> enemies, int dmg)
+        public override void Effect(List<Enemy> enemies, int dmg, int index)
         {
+            enemies[index].Hp -= dmg;
             foreach(Enemy enemy in enemies)
             {
                 if(Game1.CheckIfInRange(enemy.Center, enemy.Radius, Center, SplashRange))
@@ -25,6 +26,7 @@ namespace Slutprojekt.GameObjects.Projectiles
                     enemy.Hp -= dmg;
                 }
             }
+            IsDead = true;
         }
     }
 }

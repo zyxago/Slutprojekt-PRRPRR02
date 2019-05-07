@@ -12,10 +12,11 @@ namespace Slutprojekt
     {
         public interface ISpell
         {
-            string Spell { get; set; }
+            string SpellKey { get; set; }
             int SpellCooldown { get; set; }
             int SpellRadius { get; set; }
-            void ActivateSpell();
+            TimeSpan Cooldown { get; set; }
+            void ActivateSpell(List<Enemy> enemies = null, List<Tower> towers = null);
         }
 
         public Rectangle Drawbox { get; set; }

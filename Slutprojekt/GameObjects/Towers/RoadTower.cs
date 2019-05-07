@@ -10,7 +10,7 @@ using static Slutprojekt.Tower;
 
 namespace Slutprojekt.GameObjects.Towers
 {
-    class RoadTower : Tower, IAttack
+    sealed class RoadTower : Tower, IAttack
     {
         public int AttackRange { get; set; }
         public float AttackSpeed { get; set; }
@@ -52,20 +52,26 @@ namespace Slutprojekt.GameObjects.Towers
             {
                 if (AttackDelay <= gameTime.TotalGameTime && Game1.CheckIfInRange(enemy.Center, enemy.Radius, Center, AttackRange))
                 {
-                    Attack(enemy);
                     AttackDelay = gameTime.TotalGameTime.Add(new TimeSpan(0, 0, 0, 0, (int)(AttackSpeed * 1000)));
+                    Attack(enemy);
                     break;
                 }
             }
-            foreach (Projectile bullet in Projectiles)
+            for (int i = 0; i < Projectiles.Count; i++)
             {
-                bullet.Update();
-                foreach (Enemy enemy in enemies)
+                Projectiles[i].Update();
+                for (int j = 0; j < enemies.Count; j++)
                 {
-                    if (Game1.CheckIfInRange(enemy.Center, enemy.Radius, bullet.Center, bullet.Radius))
+                    if (Game1.CheckIfInRange(enemies[j].Center, enemies[j].Radius, Projectiles[i].Center, Projectiles[i].Radius))
                     {
-                        enemy.Hp -= AttackDMG;
+                        Projectiles[i].Effect(enemies, AttackDMG, j);//TODO kolla så att det funkar eventuellt fixa nått nytt sätt
+                        break;
                     }
+                }
+                if (Projectiles[i].IsDead)
+                {
+                    Projectiles.RemoveAt(i);
+                    i--;
                 }
             }
 
