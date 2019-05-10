@@ -32,6 +32,7 @@ namespace Slutprojekt
             Hp = hp;
             Resistance = resistance;
             Path = path;
+            Hp = 0;//Ta bort sedan
         }
 
         private void Move()
@@ -43,7 +44,7 @@ namespace Slutprojekt
             Drawbox = new Rectangle((int)(Drawbox.X + Direction.X * Speed), (int)(Drawbox.Y + Direction.Y * Speed), Drawbox.Width, Drawbox.Height);
         }
 
-        public virtual void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             base.Update();
             if (Path.IsEmpty() && !IsDead)
@@ -87,8 +88,9 @@ namespace Slutprojekt
             //Lägger till texturer med 1 pixel i från orginal bilden
             for (int i = 0; i < rawData.Length; i++)
             {
-                Color[] tempColorArr = new Color[1] { rawData[i] };
-                ExploPixelList.Insert(i, new Texture2D(graphicsDevice, 1, 1));
+                Color[] tempColorArr = new Color[] { rawData[i] };
+                /*ExploPixelList.Insert(i, new Texture2D(graphicsDevice, 1, 1));*/
+                ExploPixelList.Insert(i, Game1.pixel);//Ta bort sedan
                 ExploPixelList[i].SetData<Color>(tempColorArr);
                 Vector2 direction = OriginBox.Center.ToVector2() - ExploRectangles[i].Center.ToVector2();
                 direction.Normalize();
@@ -104,6 +106,13 @@ namespace Slutprojekt
             {
                 spriteBatch.Draw(ExploPixelList[i], ExploRectangles[i], Color.White);
             }
+        }
+
+        public void Dispose()//Ta bort sedan
+        {
+            ExploPixelList = null;
+            ExploRectangles = null;
+            ExploDirectionList = null;
         }
     }
 }

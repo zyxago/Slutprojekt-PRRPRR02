@@ -15,8 +15,6 @@ namespace Slutprojekt
     static class Menu
     {
         //API
-        public static Success success { get; set; }
-        public static Contents contents { get; set; }
 
         private static int Page { get; set; } = 1;
         public static Texture2D ArrowLTex { get; set; }
@@ -40,7 +38,7 @@ namespace Slutprojekt
             var request = new RestRequest("/", Method.GET);
             IRestResponse response = client.Execute(request);
             string content = response.Content;
-            //Menu menu = JsonConvert.DeserializeObject<Menu>(content); Byt ut till er eget huvudobjekt
+            root test = JsonConvert.DeserializeObject<root>(content);
         }
 
         public static void Load()

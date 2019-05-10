@@ -33,6 +33,8 @@ namespace Slutprojekt
         bool waveOngoing = false;
         bool spawning = false;
 
+        public static Texture2D pixel;
+
         public enum GameState
         {
             Menu,
@@ -73,6 +75,7 @@ namespace Slutprojekt
                 throw e;
             }
             base.Initialize();
+            
         }
 
         /// <summary>
@@ -84,11 +87,14 @@ namespace Slutprojekt
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("font");
             ErrorTex = Content.Load<Texture2D>("ErrorTexture");
+            pixel = Content.Load<Texture2D>("pixelError");
             Menu.Load();
             mapList = LoadData.Load(mapsToLoad);
             towerList = LoadData.Load<Tower>(towersToLoad);
             enemyList = LoadData.Load<Enemy>(enemiesToLoad);
             Hud.Load(towerList);
+            EntitySpawner.NextWave(enemyList, mapList[0].PathQueue);//Ta bort sedan
+            EntitySpawner.SpawnNextEnemy(enemies);//Ta bort sedan
         }
 
         /// <summary>
@@ -175,8 +181,10 @@ namespace Slutprojekt
                     enemies[i].Update(gameTime);
                     if (enemies[i].IsDead && enemies[i].ExploTime <= gameTime.TotalGameTime)
                     {
+                        enemies[i].Dispose();//Ta bort sedan
                         enemies.RemoveAt(i);
                         i--;
+                        GC.Collect();//Ta bort sedan
                     }
                 }
                 for(int i = 0; i < towers.Count; i++)
@@ -245,6 +253,7 @@ namespace Slutprojekt
             }
             spriteBatch.DrawString(font, $"{mouseState.Position}", new Vector2(50, 50), Color.Black);//Ta bort sen!
             spriteBatch.End();
+            
             base.Draw(gameTime);
         }
     }

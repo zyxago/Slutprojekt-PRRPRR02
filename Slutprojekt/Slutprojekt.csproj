@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="API\Contents.cs" />
     <Compile Include="API\Quote.cs" />
+    <Compile Include="API\root.cs" />
     <Compile Include="API\Success.cs" />
     <Compile Include="EntitySpawner.cs" />
     <Compile Include="GameObjects\Enemy.cs" />
