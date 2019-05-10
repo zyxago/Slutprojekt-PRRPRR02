@@ -16,7 +16,7 @@ namespace Slutprojekt
         public static GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         public static SpriteFont font;
-        KeyboardState KeyState, prevKeyState;
+        public static KeyboardState KeyState, prevKeyState;
         public static MouseState mouseState, prevMouseState;
         List<Map> mapList = new List<Map>();
         public static Random rng = new Random();
@@ -164,7 +164,7 @@ namespace Slutprojekt
                     }
                 }
                 Hud.Update();
-                if(mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton != ButtonState.Pressed && Hud.NextWaveBox.Contains(mouseState.Position) && waveOngoing == false)
+                if(mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton != ButtonState.Pressed && Hud.NextWaveBox.Contains(mouseState.Position) || KeyState.IsKeyDown(Options.startWave) && prevKeyState.IsKeyUp(Options.startWave) && waveOngoing == false)
                 {
                     waveOngoing = true;
                     spawning = true;

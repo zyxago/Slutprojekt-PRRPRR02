@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Slutprojekt.GameObjects.Enemies;
 using System;
 using System.Collections.Generic;
@@ -58,18 +59,27 @@ namespace Slutprojekt
             }
             while (points >= 10)
             {
+                Texture2D texture;
                 int n = Game1.rng.Next(0, normalTypes.Count - 1);
                 int e = Game1.rng.Next(0, elitTypes.Count - 1);
                 if (Game1.rng.Next(0, 5) != 0)
                 {
-                    enemiesToSpawn.Enqueue(new NormalType(new Rectangle((int)spawnPos.X - normalTypes[n].Texture.Width/2, (int)spawnPos.Y - normalTypes[n].Texture.Height/2, normalTypes[n].Texture.Width, normalTypes[n].Texture.Height), normalTypes[n].Texture, normalTypes[n].Radius, normalTypes[n].Speed, normalTypes[n].Hp, normalTypes[n].Resistance, new Queue<Vector2>(path)));
+                    texture = new Texture2D(Game1.graphics.GraphicsDevice, normalTypes[n].Texture.Width, normalTypes[n].Texture.Height);
+                    Color[] rawData = new Color[texture.Width * texture.Height];
+                    normalTypes[n].Texture.GetData(rawData);
+                    texture.SetData(rawData);
+                    enemiesToSpawn.Enqueue(new NormalType(new Rectangle((int)spawnPos.X - normalTypes[n].Texture.Width/2, (int)spawnPos.Y - normalTypes[n].Texture.Height/2, normalTypes[n].Texture.Width, normalTypes[n].Texture.Height), texture, normalTypes[n].Radius, normalTypes[n].Speed, normalTypes[n].Hp, normalTypes[n].Resistance, new Queue<Vector2>(path)));
                     points -= 10;
                 }
                 else
                 {
+                    texture = new Texture2D(Game1.graphics.GraphicsDevice, elitTypes[e].Texture.Width, elitTypes[e].Texture.Height);
+                    Color[] rawData = new Color[texture.Width * texture.Height];
+                    elitTypes[e].Texture.GetData(rawData);
+                    texture.SetData(rawData);
                     if (points >= 100)
                     {
-                        enemiesToSpawn.Enqueue(new ElitType(new Rectangle((int)spawnPos.X - elitTypes[e].Texture.Width/2, (int)spawnPos.Y - elitTypes[e].Texture.Height/2, elitTypes[e].Texture.Width, elitTypes[e].Texture.Height), elitTypes[e].Texture, elitTypes[e].Radius, elitTypes[e].Speed, elitTypes[e].Hp, elitTypes[e].Resistance, elitTypes[e].SpellKey, elitTypes[e].SpellCooldown, elitTypes[e].SpellRadius, new Queue<Vector2>(path)));
+                        enemiesToSpawn.Enqueue(new ElitType(new Rectangle((int)spawnPos.X - elitTypes[e].Texture.Width/2, (int)spawnPos.Y - elitTypes[e].Texture.Height/2, elitTypes[e].Texture.Width, elitTypes[e].Texture.Height), texture, elitTypes[e].Radius, elitTypes[e].Speed, elitTypes[e].Hp, elitTypes[e].Resistance, elitTypes[e].SpellKey, elitTypes[e].SpellCooldown, elitTypes[e].SpellRadius, new Queue<Vector2>(path)));
                         points -= 100;
                     }
                 }

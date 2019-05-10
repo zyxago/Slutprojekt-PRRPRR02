@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Slutprojekt.API;
+using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +33,15 @@ namespace Slutprojekt
             InGame
         };
         public static Location location;
+
+        public static void Api()
+        {
+            var client = new RestClient();
+            var request = new RestRequest("/", Method.GET);
+            IRestResponse response = client.Execute(request);
+            string content = response.Content;
+            //Menu menu = JsonConvert.DeserializeObject<Menu>(content); Byt ut till er eget huvudobjekt
+        }
 
         public static void Load()
         {

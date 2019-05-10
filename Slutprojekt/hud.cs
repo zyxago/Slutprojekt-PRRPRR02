@@ -39,14 +39,16 @@ namespace Slutprojekt
                 TowerSelected.Drawbox = new Rectangle(Game1.mouseState.Position.X - TowerSelected.Drawbox.Width / 2, Game1.mouseState.Position.Y - TowerSelected.Drawbox.Height / 2, TowerSelected.Drawbox.Width, TowerSelected.Drawbox.Height);
                 TowerSelected.Update();
             }
+            int n = 0;
             foreach (Tower tower in TowerTypes.Keys)
             {
                 Rectangle hotbarBox;
                 TowerTypes.TryGetValue(tower, out hotbarBox);
-                if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && hotbarBox.Contains(Game1.mouseState.Position) && Money >= tower.Cost)
+                if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && hotbarBox.Contains(Game1.mouseState.Position) || Game1.KeyState.IsKeyDown(Options.hotbarKeys[n]) && Game1.prevKeyState.IsKeyUp(Options.hotbarKeys[n]) && Money >= tower.Cost)
                 {
                     TowerSelected = tower;
                 }
+                n++;
             }
         }
 
