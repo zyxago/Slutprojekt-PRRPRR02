@@ -26,10 +26,12 @@ namespace Slutprojekt
         }
         protected List<Enemy> Targets { get; set; }
         public int Cost { get; private set; }
+        public string Name { get; set; }
 
-        public Tower(Rectangle drawBox, Texture2D texture, int radius, int cost) : base(drawBox, texture, radius)
+        public Tower(Rectangle drawBox, Texture2D texture, int radius, int cost, string name) : base(drawBox, texture, radius)
         {
             Cost = cost;
+            Name = name;
         }
 
         public virtual void Update(List<Enemy> enemies, GameTime gameTime)

@@ -47,6 +47,7 @@ namespace Slutprojekt
                     {
                         Texture2D projectileTexture = null;
                         string projectiletexturePath = null;
+                        string name = null;
                         int radius = 0, aRange = 0, aDmg = 0, roadHp = 1, spellCooldown = 0, spellRadius = 0, towerHp = 0, towerCost = 1, projectileEffectInt = 0;
                         float aSpeed = 0;
                         string spellType = null, projectileType = null;
@@ -73,6 +74,7 @@ namespace Slutprojekt
                         drawBox = new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height);
                         int.TryParse(docTemp.SelectSingleNode($"/{type}/Cost").InnerText, out towerCost);
                         int.TryParse(docTemp.SelectSingleNode($"/{type}/Radius").InnerText, out radius);
+                        name = docTemp.SelectSingleNode($"{type}/Name").InnerText;
                         if (type != "STower")
                         {
                             projectiletexturePath = docTemp.SelectSingleNode($"/{type}/Attack/projectileTexture").InnerText;
@@ -110,11 +112,11 @@ namespace Slutprojekt
                             }
                         }
                         if (type == "CTower")
-                            objects.Add(new ClassicTower(drawBox, texture, radius, towerCost, projectileTexture, aRange, aSpeed, aDmg, projectileType, projectileEffectInt) as T);
+                            objects.Add(new ClassicTower(drawBox, texture, radius, towerCost, name, projectileTexture, aRange, aSpeed, aDmg, projectileType, projectileEffectInt) as T);
                         else if (type == "RTower")
-                            objects.Add(new RoadTower(drawBox, texture, radius, towerCost, projectileTexture, aRange, aSpeed, aDmg, projectileType, projectileEffectInt, towerHp) as T);
+                            objects.Add(new RoadTower(drawBox, texture, radius, towerCost, name, projectileTexture, aRange, aSpeed, aDmg, projectileType, projectileEffectInt, towerHp) as T);
                         else if (type == "STower")
-                            objects.Add(new SpellTower(drawBox, texture, radius, towerCost, spellType, spellCooldown, spellRadius) as T);
+                            objects.Add(new SpellTower(drawBox, texture, radius, towerCost, name, spellType, spellCooldown, spellRadius) as T);
                     }
                     else if (typeof(T) == typeof(Enemy))
                     {

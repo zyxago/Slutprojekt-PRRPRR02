@@ -18,12 +18,18 @@ namespace Slutprojekt.GameObjects.Projectiles
 
         public override void Effect(List<Enemy> enemies, int dmg, int index)
         {
-            enemies[index].Hp -= dmg;
+            if (enemies[index].Resistance == "splash")
+                enemies[index].Hp -= dmg / 2;
+            else
+                enemies[index].Hp -= dmg;
             foreach(Enemy enemy in enemies)
             {
                 if(Game1.CheckIfInRange(enemy.Center, enemy.Radius, Center, SplashRange))
                 {
-                    enemy.Hp -= dmg;
+                    if (enemy.Resistance == "splash")
+                        enemy.Hp -= (int)(dmg * 0.8) / 2;
+                    else
+                        enemy.Hp -= (int)(dmg * 0.8);
                 }
             }
             IsDead = true;

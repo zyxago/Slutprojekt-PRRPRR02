@@ -19,8 +19,12 @@ namespace Slutprojekt
         public static Dictionary<Tower, Rectangle> TowerTypes = new Dictionary<Tower, Rectangle>();
         public static int Hp { get; set; } = 100;
         public static int Money { get; set; } = 100;
-        public static Tower TowerSelected;
+        public static Tower TowerSelected { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="towers"></param>
         public static void Load(List<Tower> towers)
         {
             TowerList = towers;
@@ -32,6 +36,9 @@ namespace Slutprojekt
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static void Update()
         {
             if (TowerSelected != null)
@@ -52,6 +59,10 @@ namespace Slutprojekt
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public static void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.DrawString(Game1.font, $"Hp: {Hp}", new Vector2(20, 10), Color.Black);
@@ -60,12 +71,16 @@ namespace Slutprojekt
             spriteBatch.Draw(NextWaveTex, NextWaveBox, Color.White);
             foreach(Tower tower in TowerTypes.Keys)
             {
-                Rectangle drawBox;
-                TowerTypes.TryGetValue(tower, out drawBox);
+                Rectangle hotbarBox;
+                TowerTypes.TryGetValue(tower, out hotbarBox);
+                if (hotbarBox.Contains(Game1.mouseState.Position))
+                {
+                    spriteBatch.DrawString(Game1.font, tower.Name, new Vector2(hotbarBox.X + 10, hotbarBox.Y - 25), Color.DarkGreen);
+                }
                 if (Money < tower.Cost)
-                    spriteBatch.Draw(tower.Texture, drawBox, Color.DimGray);
+                    spriteBatch.Draw(tower.Texture, hotbarBox, Color.DimGray);
                 else
-                    spriteBatch.Draw(tower.Texture, drawBox, Color.White);
+                    spriteBatch.Draw(tower.Texture, hotbarBox, Color.White);
             }
             if (TowerSelected != null)
                 TowerSelected.Draw(spriteBatch);

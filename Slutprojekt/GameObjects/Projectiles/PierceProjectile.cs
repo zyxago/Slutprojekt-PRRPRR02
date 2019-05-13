@@ -21,7 +21,10 @@ namespace Slutprojekt.GameObjects.Projectiles
         {
             if(index != LastHitIndex)
             {
-                enemies[index].Hp -= dmg;
+                if (enemies[index].Resistance == "pierce")
+                    enemies[index].Hp -= dmg  / 2;
+                else
+                    enemies[index].Hp -= dmg;
                 PierceCount--;
                 LastHitIndex = index;
             }

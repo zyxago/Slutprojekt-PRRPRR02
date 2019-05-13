@@ -11,7 +11,7 @@ namespace Slutprojekt.GameObjects
     public abstract class Projectile : GameObject
     {
         private Vector2 Direction;
-        private int Speed = 5;
+        private int Speed = 9;
         public bool IsDead { get; set; } = false;
         public Projectile(Rectangle drawbox, Texture2D texture, int radius, Vector2 direction) : base(drawbox, texture, radius)
         {

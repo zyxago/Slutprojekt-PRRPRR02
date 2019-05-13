@@ -29,7 +29,7 @@ namespace Slutprojekt.GameObjects.Towers
         };
         public ProjectileType Ptype { get; set; }
 
-        public ClassicTower(Rectangle drawBox, Texture2D texture, int radius, int cost, Texture2D projectileTexture, int Arange, float Aspeed, int Admg, string projectileType, int projectileEffect) : base(drawBox, texture, radius, cost)
+        public ClassicTower(Rectangle drawBox, Texture2D texture, int radius, int cost, string name, Texture2D projectileTexture, int Arange, float Aspeed, int Admg, string projectileType, int projectileEffect) : base(drawBox, texture, radius, cost, name)
         {
             AttackRange = Arange;
             AttackSpeed = Aspeed;

@@ -26,15 +26,27 @@ namespace Slutprojekt
         public bool IsDead { get; set; }
         public int Worth { get; set; } = 0;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="drawBox"></param>
+        /// <param name="texture"></param>
+        /// <param name="radius"></param>
+        /// <param name="speed"></param>
+        /// <param name="hp"></param>
+        /// <param name="resistance"></param>
+        /// <param name="path"></param>
         public Enemy(Rectangle drawBox, Texture2D texture, int radius, int speed, int hp, string resistance, Queue<Vector2> path) : base(drawBox, texture, radius)
         {
             Speed = speed;
             Hp = hp;
             Resistance = resistance;
             Path = path;
-            Hp = 0;//Ta bort sedan
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void Move()
         {
             if (Vector2.Distance(Drawbox.Center.ToVector2(), Path.Peek()) < 10)
@@ -44,6 +56,10 @@ namespace Slutprojekt
             Drawbox = new Rectangle((int)(Drawbox.X + Direction.X * Speed), (int)(Drawbox.Y + Direction.Y * Speed), Drawbox.Width, Drawbox.Height);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
             base.Update();
@@ -59,15 +75,22 @@ namespace Slutprojekt
                 ExploTime = gameTime.TotalGameTime.Add(new TimeSpan(0, 0, 1));
                 Explode(Game1.graphics.GraphicsDevice, Texture, Drawbox, 3);
             }
-            Move();
             for (int i = 0; i < ExploRectangles.Count; i++)
             {
                 ExploMoveSpeed = Game1.rng.Next(1, 6);
                 ExploRectangles[i] = new Rectangle((int)(ExploRectangles[i].X + -ExploDirectionList[i].X * ExploMoveSpeed), (int)(ExploRectangles[i].Y + -ExploDirectionList[i].Y * ExploMoveSpeed), ExploSize, ExploSize);
             }
+            if (!IsDead)
+                Move();
         }
 
-        //När den dör så exploderar den i så atta lla dens pixlar flyger iväg. Kanske döpa om...
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="graphicsDevice"></param>
+        /// <param name="texture"></param>
+        /// <param name="originBox"></param>
+        /// <param name="scale"></param>
         private void Explode(GraphicsDevice graphicsDevice, Texture2D texture, Rectangle originBox, int scale = 1)
         {
             Color[] rawData;
@@ -89,8 +112,7 @@ namespace Slutprojekt
             for (int i = 0; i < rawData.Length; i++)
             {
                 Color[] tempColorArr = new Color[] { rawData[i] };
-                /*ExploPixelList.Insert(i, new Texture2D(graphicsDevice, 1, 1));*/
-                ExploPixelList.Insert(i, Game1.pixel);//Ta bort sedan
+                ExploPixelList.Insert(i, new Texture2D(graphicsDevice, 1, 1));
                 ExploPixelList[i].SetData<Color>(tempColorArr);
                 Vector2 direction = OriginBox.Center.ToVector2() - ExploRectangles[i].Center.ToVector2();
                 direction.Normalize();
@@ -98,6 +120,10 @@ namespace Slutprojekt
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (!IsDead)
@@ -106,13 +132,6 @@ namespace Slutprojekt
             {
                 spriteBatch.Draw(ExploPixelList[i], ExploRectangles[i], Color.White);
             }
-        }
-
-        public void Dispose()//Ta bort sedan
-        {
-            ExploPixelList = null;
-            ExploRectangles = null;
-            ExploDirectionList = null;
         }
     }
 }

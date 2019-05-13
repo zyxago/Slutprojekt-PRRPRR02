@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <STower>
 	<Texture>Towers\Graphics\SpellTower1.png</Texture>
+	<Name>Spell Tower</Name>
 	<Cost>35</Cost>
 	<Radius>25</Radius>
 	<Spell>

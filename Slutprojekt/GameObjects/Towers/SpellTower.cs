@@ -16,7 +16,7 @@ namespace Slutprojekt.GameObjects.Towers
         public int SpellRadius { get; set; }
         public TimeSpan Cooldown { get; set; } = new TimeSpan(0);
 
-        public SpellTower(Rectangle drawBox, Texture2D texture, int radius, int cost, string spell, int spellCooldown, int spellRadius) :base(drawBox, texture, radius, cost)
+        public SpellTower(Rectangle drawBox, Texture2D texture, int radius, int cost, string name, string spell, int spellCooldown, int spellRadius) :base(drawBox, texture, radius, cost, name)
         {
             SpellKey = spell;
             SpellCooldown = spellCooldown;

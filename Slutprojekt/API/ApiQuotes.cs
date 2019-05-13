@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Slutprojekt.API
 {
-    class root
+    class ApiQuotes
     {
-        public static Success success { get; set; }
-        public static Contents contents { get; set; }
-
+        public  Success success { get; set; }
+        public Contents contents { get; set; }
     }
 }

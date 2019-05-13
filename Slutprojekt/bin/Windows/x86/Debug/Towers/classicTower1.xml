@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <CTower>
 	<Texture>Towers\Graphics\ClassicTower1.png</Texture>
+	<Name>Classic Tower</Name>
 	<Cost>20</Cost>
 	<Radius>25</Radius>
 	<Attack>
