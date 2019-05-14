@@ -14,7 +14,6 @@ namespace Slutprojekt
     {
         public static Texture2D HotbarTex { get; set; }
         public static Texture2D NextWaveTex { get; set; }
-        public static List<Tower> TowerList { get; set; }
         public static Rectangle NextWaveBox { get; } = new Rectangle(740, 525, 40, 40);
         public static Dictionary<Tower, Rectangle> TowerTypes = new Dictionary<Tower, Rectangle>();
         public static int Hp { get; set; } = 100;
@@ -27,12 +26,11 @@ namespace Slutprojekt
         /// <param name="towers"></param>
         public static void Load(List<Tower> towers)
         {
-            TowerList = towers;
             NextWaveTex = LoadData.LoadTexture2D(Game1.graphics.GraphicsDevice, "Hud/NextWave.png");
             HotbarTex = LoadData.LoadTexture2D(Game1.graphics.GraphicsDevice, "Hud/TowerBar.png");
-            for (int i = 0; i < TowerList.Count && i <= 8; i++)
+            for (int i = 0; i < towers.Count && i < 8; i++)
             {
-                TowerTypes.Add(TowerList[i], new Rectangle((10 + 100 * i), 570, 80, 60));
+                TowerTypes.Add(towers[i], new Rectangle((10 + 100 * i), 570, 80, 60));
             }
         }
 

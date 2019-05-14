@@ -20,7 +20,7 @@ namespace Slutprojekt
         public static MouseState mouseState, prevMouseState;
         List<Map> mapList = new List<Map>();
         public static Random rng = new Random();
-        List<Tower> towerList = new List<Tower>();
+        public List<Tower> towerList = new List<Tower>();
         List<Enemy> enemyList = new List<Enemy>();
         List<Tower> towers = new List<Tower>();
         List<Enemy> enemies = new List<Enemy>();
@@ -89,7 +89,6 @@ namespace Slutprojekt
             mapList = LoadData.Load(mapsToLoad);
             towerList = LoadData.Load<Tower>(towersToLoad);
             enemyList = LoadData.Load<Enemy>(enemiesToLoad);
-            Hud.Load(towerList);
         }
 
         /// <summary>
@@ -132,7 +131,7 @@ namespace Slutprojekt
             mouseState = Mouse.GetState();
             if (State == GameState.Menu)
             {
-                Menu.Update();
+                Menu.Update(towerList);
             }
             else if (State == GameState.InGame)
             {
@@ -219,8 +218,9 @@ namespace Slutprojekt
             base.Update(gameTime);
         }
 
-        public static void StartGame(int mapIndex)
+        public static void StartGame(int mapIndex, List<Tower> towerList)
         {
+            Hud.Load(towerList);
             MapPlaying = mapIndex-1;
             State = GameState.InGame;
         }
@@ -236,7 +236,7 @@ namespace Slutprojekt
             
             if (State == GameState.Menu)
             {
-                Menu.Draw(spriteBatch, mapList);
+                Menu.Draw(spriteBatch, mapList, towerList);
             }
             else if (State == GameState.InGame)
             {

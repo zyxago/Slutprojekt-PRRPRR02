@@ -22,12 +22,14 @@ namespace Slutprojekt
 
         private static string QuoteString { get; set; }
         private static int Page { get; set; } = 1;
-        public static Texture2D ArrowLTex { get; set; }
-        public static Texture2D ArrowRTex { get; set; }
-        public static Texture2D CurrentTexture { get; set; }
+        private static int MapIndex { get; set; } = 1;
+        private static Texture2D ArrowLTex { get; set; }
+        private static Texture2D ArrowRTex { get; set; }
+        private static Texture2D CurrentTexture { get; set; }
         private static Rectangle DrawBox { get; set; } = Game1.graphics.GraphicsDevice.Viewport.Bounds;
         private static Dictionary<Location, Texture2D> MenuTextures { get; set; } = new Dictionary<Location, Texture2D>();
         private static Dictionary<string, Rectangle> MenuBoxes { get; set; } = new Dictionary<string, Rectangle>();
+        private static List<Tower> SelectedTowers = new List<Tower>();
         private static bool ChangeHotkey { get; set; } = false;
         public enum Location
         {
@@ -44,7 +46,7 @@ namespace Slutprojekt
         /// </summary>
         public static void Load()
         {
-            QuoteString = ApiQuotes.contents.quotes[0].quote;
+            //QuoteString = ApiQuotes.contents.quotes[0].quote;
             MenuBoxes.Add("mapSlot1", new Rectangle(64, 52, 285, 235));
             MenuBoxes.Add("mapSlot2", new Rectangle(440, 48, 285, 235));
             MenuBoxes.Add("mapSlot3", new Rectangle(64, 334, 285, 235));
@@ -54,10 +56,17 @@ namespace Slutprojekt
             MenuBoxes.Add("exit", new Rectangle(225, 350, 325, 60));
             MenuBoxes.Add("arrowLeft", new Rectangle(190, 580, 50, 50));
             MenuBoxes.Add("arrowRight", new Rectangle(570, 580, 50, 50));
-            MenuBoxes.Add("startwaveKey", new Rectangle(225, 140, 50, 20));
-            for(int i = 0; i < 12; i++)
+            MenuBoxes.Add("startWaveKey", new Rectangle(225, 140, 50, 20));
+            for (int i = 0; i < 8; i++)
             {
-                MenuBoxes.Add($"towerKey{i}", new Rectangle());
+                MenuBoxes.Add($"selectTowerKey{i}", new Rectangle(225, 150 + (10 * i), 50, 20));
+            }
+            for(int i = 0; i < 3; i++)
+            {
+                for(int j = 0; j < 4; j++)
+                {
+                    MenuBoxes.Add($"tower{(i * 4) + j}", new Rectangle(35 + (j * 190), 127 + (i * 100), 160, 75));
+                }
             }
             MenuTextures.Add(Location.MainMenu, LoadData.LoadTexture2D(Game1.graphics.GraphicsDevice, "MenuGraphics/MainMenu.png"));
             MenuTextures.Add(Location.MapSelector, LoadData.LoadTexture2D(Game1.graphics.GraphicsDevice, "MenuGraphics/MapSelection.png"));
@@ -70,7 +79,7 @@ namespace Slutprojekt
         /// <summary>
         /// 
         /// </summary>
-        public static void Update()
+        public static void Update(List<Tower> towerTypes)
         {
             if (location == Location.MainMenu)
             {
@@ -81,7 +90,7 @@ namespace Slutprojekt
                 else if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["exit"].Contains(Game1.mouseState.Position))
                     Game1.State = Game1.GameState.Quit;
             }
-            else if (location == Location.Options)//TODO
+            else if (location == Location.Options)
             {
                 if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["startWaveKey"].Contains(Game1.mouseState.Position))
                 {
@@ -94,23 +103,27 @@ namespace Slutprojekt
             {
                 if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["mapSlot1"].Contains(Game1.mouseState.Position))
                 {
-                    location = Location.InGame;
-                    Game1.StartGame(Page * 1);
+                    location = Location.TowerSelector;
+                    MapIndex = Page * 1;
+                    Page = 1;
                 }
                 else if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["mapSlot2"].Contains(Game1.mouseState.Position))
                 {
-                    location = Location.InGame;
-                    Game1.StartGame(Page * 2);
+                    location = Location.TowerSelector;
+                    MapIndex = Page * 2;
+                    Page = 1;
                 }
                 else if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["mapSlot3"].Contains(Game1.mouseState.Position))
                 {
-                    location = Location.InGame;
-                    Game1.StartGame(Page * 3);
+                    location = Location.TowerSelector;
+                    MapIndex = Page * 3;
+                    Page = 1;
                 }
                 else if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["mapSlot4"].Contains(Game1.mouseState.Position))
                 {
-                    location = Location.InGame;
-                    Game1.StartGame(Page * 4);
+                    location = Location.TowerSelector;
+                    MapIndex = Page * 4;
+                    Page = 1;
                 }
                 else if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["arrowLeft"].Contains(Game1.mouseState.Position))
                 {
@@ -122,7 +135,39 @@ namespace Slutprojekt
             }
             else if (location == Location.TowerSelector)
             {
-
+                if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["arrowLeft"].Contains(Game1.mouseState.Position))
+                {
+                    if (Page != 1)
+                        Page--;
+                }
+                else if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["arrowRight"].Contains(Game1.mouseState.Position))
+                    Page++;
+                if (SelectedTowers.Count < 8 && SelectedTowers.Count < towerTypes.Count)
+                {
+                    for(int i = 0; i < 12 && i < towerTypes.Count; i++)
+                    {
+                        if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes[$"tower{i}"].Contains(Game1.mouseState.Position))
+                        {
+                            bool Duplicate = false;
+                            if(SelectedTowers.Count != 0)
+                            {
+                                foreach(Tower tower in SelectedTowers)
+                                {
+                                    if(tower == towerTypes[i])
+                                    {
+                                        Duplicate = true;
+                                    }
+                                }
+                            }
+                            if(!Duplicate)
+                                SelectedTowers.Add(towerTypes[i]);
+                        }
+                    }
+                }
+                else
+                {
+                    Game1.StartGame(MapIndex, SelectedTowers);
+                }
             }
         }
 
@@ -136,10 +181,18 @@ namespace Slutprojekt
             spriteBatch.Draw(MenuTextures[location], DrawBox, Color.White);
             if(location == Location.MainMenu)
             {
-                spriteBatch.DrawString(Game1.font, QuoteString, new Vector2(70, 60), Color.Black);
+                try
+                {
+                    spriteBatch.DrawString(Game1.font, $"{QuoteString}", new Vector2(70, 60), Color.Black);
+                }
+                catch
+                {
+
+                }
             }
             else if(location == Location.Options)
             {
+                //spriteBatch.DrawString()//TODO: skriv ut hotkey texterna
                 if (ChangeHotkey)
                 {
                     spriteBatch.DrawString(Game1.font, "Press any button to make it the new hotkey", new Vector2(200, 50), Color.Black);
@@ -164,10 +217,13 @@ namespace Slutprojekt
             }
             else if (location == Location.TowerSelector)
             {
-                for(int i = (Page - 1) * 12; i < (Page - 1) * 12 + 12 && i < towerTypes.Count; i++)
+                spriteBatch.Draw(ArrowLTex, MenuBoxes["arrowLeft"], Color.White);
+                spriteBatch.Draw(ArrowRTex, MenuBoxes["arrowRight"], Color.White);
+                spriteBatch.DrawString(Game1.font, $"Page: {Page}", new Vector2(30, 20), Color.Black);
+                for (int i = (Page - 1) * 12; i < (Page - 1) * 12 + 12 && i < towerTypes.Count; i++)
                 {
-                    if (i % 12 == 0)
-                        spriteBatch.Draw(towerTypes[i].Texture, MenuBoxes[], Color.White);
+                    if (i % 12 == i)
+                        spriteBatch.Draw(towerTypes[i].Texture, MenuBoxes[$"tower{i}"], towerTypes[i].Color);
                 }
             }
         }

@@ -15,7 +15,7 @@ namespace Slutprojekt.Spells
             {
                 if (Game1.CheckIfInRange(towers[i].Center, towers[i].Radius, center, radius))
                 {
-                    //towers[i]. = Math.Max((int)(enemies[i].Speed * 0.66), 1);
+                    //towers[i]. = Math.Max((int)(towers[i] * 0.66), 1);
                     towers[i].Color = Color.Blue;
                 }
             }
