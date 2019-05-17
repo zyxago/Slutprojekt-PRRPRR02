@@ -12,6 +12,5 @@
 		<typeModifier>100</typeModifier>
 		<projectileTexture>Towers\Graphics\projectile\splash.png</projectileTexture>
 	</Attack>
-	
 	<Hp>10</Hp>
 </RTower>
