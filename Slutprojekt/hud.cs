@@ -79,7 +79,7 @@ namespace Slutprojekt
                     if((tower as SpellTower).SpellReady)
                     {
                         tempCounter++;
-                        if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && ActivateSpellBox.Contains(Game1.mouseState.Position) || Game1.KeyState.IsKeyDown(Options.activateSpell) && Game1.prevKeyState.IsKeyDown(Options.activateSpell))
+                        if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && ActivateSpellBox.Contains(Game1.mouseState.Position) || Game1.KeyState.IsKeyDown(Options.activateSpell) && Game1.prevKeyState.IsKeyUp(Options.activateSpell))
                         {
                             (tower as SpellTower).SpellActivate = true;
                             break;

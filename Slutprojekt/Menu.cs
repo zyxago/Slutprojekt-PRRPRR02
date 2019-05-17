@@ -71,7 +71,7 @@ namespace Slutprojekt
         /// </summary>
         public static void Load()
         {
-            //QuoteString = ApiQuotes.contents.quotes[0].quote;
+            QuoteString = ApiQuotes.contents.quotes[0].quote;
             MenuBoxes.Add("mapSlot1", new Rectangle(64, 52, 285, 235));
             MenuBoxes.Add("mapSlot2", new Rectangle(440, 48, 285, 235));
             MenuBoxes.Add("mapSlot3", new Rectangle(64, 334, 285, 235));
