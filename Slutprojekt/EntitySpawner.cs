@@ -86,5 +86,13 @@ namespace Slutprojekt
             }
             return enemiesToSpawn;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static void Reset()
+        {
+            wave = 0;
+        }
     }
 }

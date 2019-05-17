@@ -18,16 +18,16 @@ namespace Slutprojekt.GameObjects.Enemies
 
         public ElitType(Rectangle drawBox, Texture2D texture, int radius, int speed, int hp, string resistance, string enemySpell, int spellCooldown, int spellRadius, Queue<Vector2> path = null) : base(drawBox, texture, radius, speed, hp, resistance, path)
         {
-            Worth = 50;
+            Worth = 28;
             Dmg = 10;
             SpellKey = enemySpell;
             SpellCooldown = spellCooldown;
             SpellRadius = spellRadius;
         }
 
-        public void Update(List<Tower> towers, GameTime gameTime)
+        public override void Update(List<Tower> towers, GameTime gameTime)
         {
-            base.Update(gameTime);
+            base.Update(towers, gameTime);
             if (Cooldown <= gameTime.TotalGameTime)
             {
                 Cooldown = gameTime.TotalGameTime.Add(new TimeSpan(0, 0, SpellCooldown));
@@ -37,7 +37,7 @@ namespace Slutprojekt.GameObjects.Enemies
 
         public void ActivateSpell(List<Enemy> enemies = null,List<Tower> towers = null)
         {
-            
+            Spell.CastSpell(SpellKey, SpellRadius, Center, towers);
         }
     }
 }

@@ -59,8 +59,9 @@ namespace Slutprojekt
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="towers"></param>
         /// <param name="gameTime"></param>
-        public void Update(GameTime gameTime)
+        public virtual void Update(List<Tower> towers, GameTime gameTime)
         {
             base.Update();
             if (Path.IsEmpty() && !IsDead)

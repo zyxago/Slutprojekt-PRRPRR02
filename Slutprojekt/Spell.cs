@@ -25,7 +25,7 @@ namespace Slutprojekt
             Tspells[spellKey].Invoke(radius, center, enemies);
         }
 
-        public static void Castspell(string spellkey, int radius, Vector2 center, List<Tower> towers)
+        public static void CastSpell(string spellkey, int radius, Vector2 center, List<Tower> towers)
         {
             Espells[spellkey].Invoke(radius, center, towers);
         }

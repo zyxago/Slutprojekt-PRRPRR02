@@ -26,11 +26,11 @@ namespace Slutprojekt
         private static Texture2D ArrowLTex { get; set; }
         private static Texture2D ArrowRTex { get; set; }
         private static Texture2D CurrentTexture { get; set; }
+        private static Texture2D ExitOptionsButtonTex { get; set; }
         private static Rectangle DrawBox { get; set; } = Game1.graphics.GraphicsDevice.Viewport.Bounds;
         private static Dictionary<Location, Texture2D> MenuTextures { get; set; } = new Dictionary<Location, Texture2D>();
         private static Dictionary<string, Rectangle> MenuBoxes { get; set; } = new Dictionary<string, Rectangle>();
         private static List<Tower> SelectedTowers = new List<Tower>();
-        private static bool ChangeHotkey { get; set; } = false;
         public enum Location
         {
             MainMenu,
@@ -39,14 +39,39 @@ namespace Slutprojekt
             TowerSelector,
             InGame
         };
+        private enum ChangeHotkey
+        {
+            None,
+            StartWave,
+            Hotbar0,
+            Hotbar1,
+            Hotbar2,
+            Hotbar3,
+            Hotbar4,
+            Hotbar5,
+            Hotbar6,
+            Hotbar7,
+            ActivateSpell
+
+        }
+        private static ChangeHotkey hotkey;
         public static Location location;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static void Reset()
+        {
+            location = Location.MainMenu;
+            SelectedTowers = new List<Tower>();
+        }
 
         /// <summary>
         /// Call to set menus rectangles and load textures
         /// </summary>
         public static void Load()
         {
-            //QuoteString = ApiQuotes.contents.quotes[0].quote;
+            QuoteString = ApiQuotes.contents.quotes[0].quote;
             MenuBoxes.Add("mapSlot1", new Rectangle(64, 52, 285, 235));
             MenuBoxes.Add("mapSlot2", new Rectangle(440, 48, 285, 235));
             MenuBoxes.Add("mapSlot3", new Rectangle(64, 334, 285, 235));
@@ -56,10 +81,12 @@ namespace Slutprojekt
             MenuBoxes.Add("exit", new Rectangle(225, 350, 325, 60));
             MenuBoxes.Add("arrowLeft", new Rectangle(190, 580, 50, 50));
             MenuBoxes.Add("arrowRight", new Rectangle(570, 580, 50, 50));
-            MenuBoxes.Add("startWaveKey", new Rectangle(225, 140, 50, 20));
+            MenuBoxes.Add("exitOptions", new Rectangle(200, 400, 80, 40));
+            MenuBoxes.Add("startWaveKey", new Rectangle(200, 100, 120, 20));
+            MenuBoxes.Add("activateSpellKey", new Rectangle(200, 70, 120, 20));
             for (int i = 0; i < 8; i++)
             {
-                MenuBoxes.Add($"selectTowerKey{i}", new Rectangle(225, 150 + (10 * i), 50, 20));
+                MenuBoxes.Add($"selectTowerKey{i}", new Rectangle(200, 130 + (30 * i), 120, 20));
             }
             for(int i = 0; i < 3; i++)
             {
@@ -72,6 +99,7 @@ namespace Slutprojekt
             MenuTextures.Add(Location.MapSelector, LoadData.LoadTexture2D(Game1.graphics.GraphicsDevice, "MenuGraphics/MapSelection.png"));
             MenuTextures.Add(Location.Options, LoadData.LoadTexture2D(Game1.graphics.GraphicsDevice, "MenuGraphics/OptionsBackground.png"));
             MenuTextures.Add(Location.TowerSelector, LoadData.LoadTexture2D(Game1.graphics.GraphicsDevice, "MenuGraphics/TowerSelection.png"));
+            ExitOptionsButtonTex = LoadData.LoadTexture2D(Game1.graphics.GraphicsDevice, "MenuGraphics/OptionsExitButton.png");
             ArrowLTex = LoadData.LoadTexture2D(Game1.graphics.GraphicsDevice, "MenuGraphics/arrowLeft.png");
             ArrowRTex = LoadData.LoadTexture2D(Game1.graphics.GraphicsDevice, "MenuGraphics/arrowRight.png");
         }
@@ -79,6 +107,7 @@ namespace Slutprojekt
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="towerTypes"></param>
         public static void Update(List<Tower> towerTypes)
         {
             if (location == Location.MainMenu)
@@ -92,12 +121,32 @@ namespace Slutprojekt
             }
             else if (location == Location.Options)
             {
-                if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["startWaveKey"].Contains(Game1.mouseState.Position))
+                if (Game1.KeyState.GetPressedKeys().Length != 0 && hotkey != ChangeHotkey.None)
                 {
-                    ChangeHotkey = true;
-                    if (Game1.KeyState.GetPressedKeys().Length == 1)
+                    if (hotkey == ChangeHotkey.StartWave)
                         Options.startWave = Game1.KeyState.GetPressedKeys().First();
+                    else if (hotkey == ChangeHotkey.ActivateSpell)
+                        Options.activateSpell = Game1.KeyState.GetPressedKeys().First();
+                    for(int i = 0; i < 8; i++)
+                    {
+                        if (hotkey == (ChangeHotkey)(i + 2))
+                        {
+                            Options.hotbarKeys[i] = Game1.KeyState.GetPressedKeys().First();
+                        }
+                    }
+                    hotkey = ChangeHotkey.None;
                 }
+                if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["startWaveKey"].Contains(Game1.mouseState.Position))
+                    hotkey = ChangeHotkey.StartWave;
+                else if(Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["activateSpellKey"].Contains(Game1.mouseState.Position))
+                    hotkey = ChangeHotkey.ActivateSpell;
+                for (int i = 0; i < 8; i++)
+                {
+                    if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes[$"selectTowerKey{i}"].Contains(Game1.mouseState.Position))
+                        hotkey = (ChangeHotkey)(2 + i);
+                }
+                if (Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.prevMouseState.LeftButton != ButtonState.Pressed && MenuBoxes["exitOptions"].Contains(Game1.mouseState.Position))
+                    location = Location.MainMenu;
             }
             else if (location == Location.MapSelector)
             {
@@ -181,9 +230,9 @@ namespace Slutprojekt
             spriteBatch.Draw(MenuTextures[location], DrawBox, Color.White);
             if(location == Location.MainMenu)
             {
-                try
+                try//Nödlösning då vissa karaktärer i stringen får spelet att krasha...
                 {
-                    spriteBatch.DrawString(Game1.font, $"{QuoteString}", new Vector2(70, 60), Color.Black);
+                    spriteBatch.DrawString(Game1.font, QuoteString, new Vector2(70, 60), Color.Black);
                 }
                 catch
                 {
@@ -192,11 +241,17 @@ namespace Slutprojekt
             }
             else if(location == Location.Options)
             {
-                //spriteBatch.DrawString()//TODO: skriv ut hotkey texterna
-                if (ChangeHotkey)
+                spriteBatch.Draw(ExitOptionsButtonTex, MenuBoxes["exitOptions"], Color.White);
+                spriteBatch.DrawString(Game1.font, $"Star Wave Key: {Options.startWave}", new Vector2(MenuBoxes["startWaveKey"].X, MenuBoxes["startWaveKey"].Y), Color.Black);
+                spriteBatch.DrawString(Game1.font, $"Activate a Spell Key: {Options.activateSpell}", new Vector2(MenuBoxes["activateSpellKey"].X, MenuBoxes["activateSpellKey"].Y), Color.Black);
+                for(int i = 0;i < 8; i++)
                 {
-                    spriteBatch.DrawString(Game1.font, "Press any button to make it the new hotkey", new Vector2(200, 50), Color.Black);
+                    spriteBatch.DrawString(Game1.font, $"Hotbar number {i} key: {Options.hotbarKeys[i]}", new Vector2(MenuBoxes[$"selectTowerKey{i}"].X, MenuBoxes[$"selectTowerKey{i}"].Y), Color.Black);
                 }
+                if (hotkey != ChangeHotkey.None)
+                    spriteBatch.DrawString(Game1.font, "Press any button to make it the new hotkey", new Vector2(200, 50), Color.Black);
+                else
+                    spriteBatch.DrawString(Game1.font, "Click on a hotkey to change it", new Vector2(200, 50), Color.Black);
             }
             else if (location == Location.MapSelector)
             {

@@ -5,6 +5,7 @@ using Slutprojekt.GameObjects.Towers;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Slutprojekt
 {
@@ -32,6 +33,7 @@ namespace Slutprojekt
         int spawnDelay = 0;
         bool waveOngoing = false;
         bool spawning = false;
+        bool Lost = false;
 
         public enum GameState
         {
@@ -118,6 +120,12 @@ namespace Slutprojekt
             return false;
         }
 
+        public void Reset()
+        {
+            List<Tower> towers = new List<Tower>();
+            List<Enemy> enemies = new List<Enemy>();
+        }
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -135,79 +143,98 @@ namespace Slutprojekt
             }
             else if (State == GameState.InGame)
             {
-                bool Collision = false;
-                if (Hud.TowerSelected != null)
+                if (Lost)
                 {
-                    foreach(Tower PlacedTower in towers)
+                    if(KeyState.GetPressedKeys().Length != 0 && KeyState.GetPressedKeys().First() == Keys.Enter)
                     {
-                        if (CheckIfInRange(PlacedTower.Center, PlacedTower.Radius, Hud.TowerSelected.Center, Hud.TowerSelected.Radius))
-                            Collision = true;
+                        Hud.Reset();
+                        EntitySpawner.Reset();
+                        Menu.Reset();
+                        Reset();
+                        State = GameState.Menu;
+                        Lost = false;
                     }
-                    if (Collision)
-                        Hud.TowerSelected.Color = Color.Gray;
-                    else
-                        Hud.TowerSelected.Color = Color.White;
+                }
+                else
+                {
+                    bool Collision = false;
+                    if (Hud.TowerSelected != null)
+                    {
+                        foreach (Tower PlacedTower in towers)
+                        {
+                            if (CheckIfInRange(PlacedTower.Center, PlacedTower.Radius, Hud.TowerSelected.Center, Hud.TowerSelected.Radius))
+                                Collision = true;
+                        }
+                        if (Collision)
+                            Hud.TowerSelected.Color = Color.Gray;
+                        else
+                            Hud.TowerSelected.Color = Color.White;
 
-                    //Place tower
-                    if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton != ButtonState.Pressed && Collision == false)
-                    {
-                        Hud.Money -= Hud.TowerSelected.Cost;
-                        if (Hud.TowerSelected is SpellTower)
+                        //Place tower
+                        if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton != ButtonState.Pressed && Collision == false)
                         {
-                            towers.Add(new SpellTower(new Rectangle(Hud.TowerSelected.Drawbox.X, Hud.TowerSelected.Drawbox.Y, Hud.TowerSelected.Drawbox.Width, Hud.TowerSelected.Drawbox.Height), Hud.TowerSelected.Texture, Hud.TowerSelected.Radius, Hud.TowerSelected.Cost, Hud.TowerSelected.Name, (Hud.TowerSelected as SpellTower).SpellKey, (Hud.TowerSelected as SpellTower).SpellCooldown, (Hud.TowerSelected as SpellTower).SpellRadius));
+                            Hud.Money -= Hud.TowerSelected.Cost;
+                            if (Hud.TowerSelected is SpellTower)
+                            {
+                                towers.Add(new SpellTower(new Rectangle(Hud.TowerSelected.Drawbox.X, Hud.TowerSelected.Drawbox.Y, Hud.TowerSelected.Drawbox.Width, Hud.TowerSelected.Drawbox.Height), Hud.TowerSelected.Texture, Hud.TowerSelected.Radius, Hud.TowerSelected.Cost, Hud.TowerSelected.Name, (Hud.TowerSelected as SpellTower).SpellKey, (Hud.TowerSelected as SpellTower).SpellCooldown, (Hud.TowerSelected as SpellTower).SpellRadius));
+                            }
+                            else if (Hud.TowerSelected is RoadTower)
+                            {
+                                towers.Add(new RoadTower(new Rectangle(Hud.TowerSelected.Drawbox.X, Hud.TowerSelected.Drawbox.Y, Hud.TowerSelected.Drawbox.Width, Hud.TowerSelected.Drawbox.Height), Hud.TowerSelected.Texture, Hud.TowerSelected.Radius, Hud.TowerSelected.Cost, Hud.TowerSelected.Name, (Hud.TowerSelected as RoadTower).ProjectileTexture, (Hud.TowerSelected as RoadTower).AttackRange, (Hud.TowerSelected as RoadTower).AttackSpeed, (Hud.TowerSelected as RoadTower).AttackDMG, (Hud.TowerSelected as RoadTower).Ptype.ToString(), (Hud.TowerSelected as RoadTower).ProjectileEffect, (Hud.TowerSelected as RoadTower).Hp));
+                            }
+                            else if (Hud.TowerSelected is ClassicTower)
+                            {
+                                towers.Add(new ClassicTower(new Rectangle(Hud.TowerSelected.Drawbox.X, Hud.TowerSelected.Drawbox.Y, Hud.TowerSelected.Drawbox.Width, Hud.TowerSelected.Drawbox.Height), Hud.TowerSelected.Texture, Hud.TowerSelected.Radius, Hud.TowerSelected.Cost, Hud.TowerSelected.Name, (Hud.TowerSelected as ClassicTower).ProjectileTexture, (Hud.TowerSelected as ClassicTower).AttackRange, (Hud.TowerSelected as ClassicTower).AttackSpeed, (Hud.TowerSelected as ClassicTower).AttackDMG, (Hud.TowerSelected as ClassicTower).Ptype.ToString(), (Hud.TowerSelected as ClassicTower).ProjectileEffect));
+                            }
+                            Hud.TowerSelected = null;
                         }
-                        else if (Hud.TowerSelected is RoadTower)
-                        {
-                            towers.Add(new RoadTower(new Rectangle(Hud.TowerSelected.Drawbox.X, Hud.TowerSelected.Drawbox.Y, Hud.TowerSelected.Drawbox.Width, Hud.TowerSelected.Drawbox.Height), Hud.TowerSelected.Texture, Hud.TowerSelected.Radius, Hud.TowerSelected.Cost, Hud.TowerSelected.Name, (Hud.TowerSelected as RoadTower).ProjectileTexture, (Hud.TowerSelected as RoadTower).AttackRange, (Hud.TowerSelected as RoadTower).AttackSpeed, (Hud.TowerSelected as RoadTower).AttackDMG, (Hud.TowerSelected as RoadTower).Ptype.ToString(), (Hud.TowerSelected as RoadTower).ProjectileEffect, (Hud.TowerSelected as RoadTower).Hp));
-                        }
-                        else if (Hud.TowerSelected is ClassicTower)
-                        {
-                            towers.Add(new ClassicTower(new Rectangle(Hud.TowerSelected.Drawbox.X, Hud.TowerSelected.Drawbox.Y, Hud.TowerSelected.Drawbox.Width, Hud.TowerSelected.Drawbox.Height), Hud.TowerSelected.Texture, Hud.TowerSelected.Radius, Hud.TowerSelected.Cost, Hud.TowerSelected.Name, (Hud.TowerSelected as ClassicTower).ProjectileTexture, (Hud.TowerSelected as ClassicTower).AttackRange, (Hud.TowerSelected as ClassicTower).AttackSpeed, (Hud.TowerSelected as ClassicTower).AttackDMG, (Hud.TowerSelected as ClassicTower).Ptype.ToString(), (Hud.TowerSelected as ClassicTower).ProjectileEffect));
-                        }
-                        Hud.TowerSelected = null;
                     }
-                }
-                Hud.Update();
+                    Hud.Update(towers);
 
-                //Start wave
-                if(mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton != ButtonState.Pressed && Hud.NextWaveBox.Contains(mouseState.Position) || KeyState.IsKeyDown(Options.startWave) && prevKeyState.IsKeyUp(Options.startWave) && waveOngoing == false)
-                {
-                    waveOngoing = true;
-                    spawning = true;
-                    EntitySpawner.NextWave(enemyList, mapList[MapPlaying].PathQueue);
-                }
+                    //Start wave
+                    if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton != ButtonState.Pressed && Hud.NextWaveBox.Contains(mouseState.Position) || KeyState.IsKeyDown(Options.startWave) && prevKeyState.IsKeyUp(Options.startWave) && waveOngoing == false)
+                    {
+                        waveOngoing = true;
+                        spawning = true;
+                        EntitySpawner.NextWave(enemyList, mapList[MapPlaying].PathQueue);
+                    }
 
-                for(int i = 0; i < enemies.Count; i++)
-                {
-                    enemies[i].Update(gameTime);
-                    if (enemies[i].IsDead && enemies[i].ExploTime <= gameTime.TotalGameTime)
+                    for (int i = 0; i < enemies.Count; i++)
                     {
-                        enemies.RemoveAt(i);
-                        i--;
-                    }
-                }
-                for(int i = 0; i < towers.Count; i++)
-                {
-                    towers[i].Update(enemies, gameTime);
-                }
-                if (waveOngoing)
-                {
-                    if (spawning == true)
-                    {
-                        if (!EntitySpawner.EnemiesToSpawn.IsEmpty() && spawnDelay <= 0)
+                        enemies[i].Update(towers, gameTime);
+                        if (enemies[i].IsDead && enemies[i].ExploTime <= gameTime.TotalGameTime)
                         {
-                            EntitySpawner.SpawnNextEnemy(enemies);
-                            spawnDelay = rng.Next(0, 20);
+                            enemies.RemoveAt(i);
+                            i--;
                         }
-                        else if (EntitySpawner.EnemiesToSpawn.IsEmpty())
-                            spawning = false;
                     }
-                    if (enemies.Count == 0 && spawning == false)
+                    for (int i = 0; i < towers.Count; i++)
                     {
-                        waveOngoing = false;
+                        towers[i].Update(enemies, gameTime);
                     }
+                    if (waveOngoing)
+                    {
+                        if (spawning == true)
+                        {
+                            if (!EntitySpawner.EnemiesToSpawn.IsEmpty() && spawnDelay <= 0)
+                            {
+                                EntitySpawner.SpawnNextEnemy(enemies);
+                                spawnDelay = rng.Next(0, 20);
+                            }
+                            else if (EntitySpawner.EnemiesToSpawn.IsEmpty())
+                                spawning = false;
+                        }
+                        if (enemies.Count == 0 && spawning == false)
+                        {
+                            waveOngoing = false;
+                        }
+                    }
+                    if (!waveOngoing && Hud.Hp <= 0)
+                    {
+                        Lost = true;
+                    }
+                    spawnDelay--;
                 }
-                spawnDelay--;
             }
             else if (State == GameState.Quit)
             {
@@ -251,7 +278,10 @@ namespace Slutprojekt
                 }
                 Hud.Draw(spriteBatch);
             }
-            spriteBatch.DrawString(font, $"{mouseState.Position}", new Vector2(50, 50), Color.Black);//Ta bort sen!-------------------------------------
+            if (Lost)
+            {
+                spriteBatch.DrawString(font, "YOU LOSE! press 'Enter' to return to main menu", new Vector2(200, 80), Color.Red);
+            }
             spriteBatch.End();
             
             base.Draw(gameTime);

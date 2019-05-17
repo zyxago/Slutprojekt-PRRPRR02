@@ -12,7 +12,7 @@ namespace Slutprojekt.GameObjects.Enemies
     {
         public NormalType(Rectangle drawBox, Texture2D texture, int radius, int speed, int hp, string resistance, Queue<Vector2> path = null) : base(drawBox, texture, radius, speed, hp, resistance, path)
         {
-            Worth = 10;
+            Worth = 7;
             Dmg = 1;
         }
     }
