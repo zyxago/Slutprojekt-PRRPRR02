@@ -12,7 +12,7 @@ using System.Xml;
 
 namespace Slutprojekt
 {
-    static class LoadData//TODO: FIXA TRY, CATCH PÅ ALLT SOM HAR MED FILER ATT GÖRA
+    static class LoadData
     {
         /// <summary>
         /// 
