@@ -7,6 +7,7 @@ Behövs en XML fil med en filsökväg till en bild och en x, y värden som defie
 Första "pointen" anger startpunkten, sista "pointen" anger slutpunkt på banan.
 MÅSTE finnas en filsökväg och minst två points
 Ex.
+```
 <?xml version="1.0"?>
 <Map>
 	<Texture>Map\Graphics\...</Texture>
@@ -21,7 +22,7 @@ Ex.
 		</point>
 	</Path>
 </Map>
-
+```
 Torn:
 Behövs en XML fil och en bild till tornet, olika sorters torn har lite annorlunda värden i XML filen.
 Exempel på classic tower:
