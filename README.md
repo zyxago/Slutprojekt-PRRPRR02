@@ -26,6 +26,7 @@ Ex.
 Torn:
 Behövs en XML fil och en bild till tornet, olika sorters torn har lite annorlunda värden i XML filen.
 Exempel på classic tower:
+```
 <?xml version="1.0"?>
 <CTower>	<---Indikerar att det är ett classic Tower
 	<Texture>Towers\Graphics\...</Texture>
@@ -41,9 +42,10 @@ Exempel på classic tower:
 		<projectileTexture>Towers\Graphics\projectile\...</projectileTexture>	//Texture för skottet
 	</Attack>
 </CTower>
-
+```
 Ända skillnaden på classic och road är att road har ett hp värde
 Exempel på Road tower:
+```
 <?xml version="1.0"?>
 <RTower>	<---Indikerar att det är ett road Tower
 	<Texture>Towers\Graphics\...</Texture>
@@ -61,10 +63,11 @@ Exempel på Road tower:
 	
 	<Hp>10</Hp>	//Hp för tornet
 </RTower>
-
+```
 Spell tower kan inte attackera och har en spell istållet så den är lite annorlunda ifrån de andra.
 Det ända spellet man kan välja utifrån för tillfället är 'Tslow'
 Exempel på Spell tower:
+```
 <?xml version="1.0"?>
 <STower>	<---Indikerar att det är ett spell Tower
 	<Texture>Towers\Graphics\...</Texture>
@@ -77,8 +80,9 @@ Exempel på Spell tower:
 		<radius>100</radius>	//Spellets räckvidd
 	</Spell>
 </STower>
-
+```
 XML exemplen till fiender:
+```
 <?xml version="1.0"?>
 <NEnemy>	<----Indikator på att det är en standar fiender
 	<Texture>Enemies\Graphics\standardEnemy1.png</Texture>
@@ -87,8 +91,9 @@ XML exemplen till fiender:
 	<Radius>20</Radius>
 	<Resistance>splash</Resistance>
 </NEnemy>
-
+```
 XML elit exempel:
+```
 <?xml version="1.0"?>
 <EEnemy>
 	<Texture>Enemies\Graphics\elitEnemy1.png</Texture>
@@ -103,3 +108,5 @@ XML elit exempel:
 		<type>Eslow</type>	//Typ av spell, i detta fall ett attack speed slow spell
 	</Ability>
 </EEnemy>
+
+```
